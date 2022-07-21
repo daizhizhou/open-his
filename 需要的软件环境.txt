@@ -1,0 +1,20 @@
+
+-- 服务器环境
+1、VMware-WorkStation-Pro 16
+2、Centos7 镜像文件
+3、XShell + XFtp
+
+-- 虚拟机环境
+1、JDK8
+2、Docker
+3、Zookeeper
+4、Redis (Docker)
+5、FastDFS (Docker)
+6、MYSQL
+
+-- 开发环境
+1、IDEA-2020版以上
+2、JDK8
+3、Maven
+4、VsCode 或者 WebStorm
+6、Navicat15

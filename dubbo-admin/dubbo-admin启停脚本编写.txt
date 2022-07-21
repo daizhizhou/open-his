@@ -1,0 +1,35 @@
+启动：vim start.sh
+- - - - - - - - - - - - - content - - - - - - - - - - - -
+#!/bin/sh
+PIDFILE="./dubbo-admin.pid"
+LOGFILE="./dubbo-admin.log"
+if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE"); then
+echo "eureka is already running..."
+exit 1
+
+fi
+nohup java -jar dubbo-admin-0.0.1-SNAPSHOT.jar > $LOGFILE & echo $! > $PIDFILE
+echo "dubbo-admin start..."
+- - - - - - - - - - - - - content - - - - - - - - - - - -
+赋予脚本可执行权限
+chmod +x start.sh
+
+停止： vim stop.sh
+- - - - - - - - - - - - - content - - - - - - - - - - - -
+#!/bin/sh
+PIDFILE="./dubbo-admin.pid"
+
+if [ ! -f "$PIDFILE" ] || ! kill -0 "$(cat "$PIDFILE")"; then
+echo "dubbo-admin not running..."
+
+else
+echo "stopping dubbo-admin..."
+PID="$(cat "$PIDFILE")"
+kill -9 $PID
+rm "$PIDFILE"
+
+echo "....dubbo-admin stopped"
+fi
+- - - - - - - - - - - - - content - - - - - - - - - - - -
+赋予脚本可执行权限
+chmod +x stop.sh

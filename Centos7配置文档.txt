@@ -1,0 +1,358 @@
+
+# 虚拟机环境的网卡配置
+[root@localhost ~]# vi /etc/sysconfig/network-scripts/ifcfg-ens33
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=static
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=ens33
+UUID=3a5e27b5-b19c-4be4-a02c-85236bb562d5
+DEVICE=ens33
+ONBOOT=yes
+IPADDR=192.168.124.34
+GATEWAY=192.168.124.1
+NETMASK=255.255.255.0
+DNS1=114.114.114.114
+PREFIX=24
+IPV6_PRIVACY=no
+
+# - - - - - - - - - - - - - - - - - - - - 防火墙设置开始 - - - - - - - - - - - - - - - - - - - - #
+# 1、关闭防火墙，关闭防火墙自启动
+systemctl stop firewalld
+systemctl disable firewalld
+
+# 2、开启，和开启自启动
+systemctl start firewalld
+systemctl enable firewalld
+
+# - - - - - - - - - - - - - - - - - - - - 防火墙设置结束 - - - - - - - - - - - - - - - - - - - - #
+
+# - - - - - - - - - - - - - - - - - - - - 端口设置开始 - - - - - - - - - - - - - - - - - - - - #
+firewall-cmd --zone=public --list-ports
+
+# 添加开放端口
+firewall-cmd --zone=public --add-port=5672/tcp --permanent
+# 删除开放端口
+firewall-cmd --zone=public --remove-port=5672/tcp --permanent
+# 重新加载防火墙，让更改生效
+firewall-cmd --reload
+
+
+
+# 查看系统所有监听的端口
+netstat -lntp
+
+# 查看指定端口
+netstat -lntp | grep 3306
+netstat -nap | grep 5672
+ps -ef | grep 端口号
+
+# 根据PID杀死进程
+kill -9 PID号
+
+# - - - - - - - - - - - - - - - - - - - - 端口设置结束 - - - - - - - - - - - - - - - - - - - - #
+
+
+# 添加yum源 这里是清华的Centos7yum源
+https://mirrors.cnnic.cn/help/centos/
+按照文档直接CV执行即可
+
+# 安装epel库
+sudo yum install -y epel-release
+
+# - - - - - - - - - - - - - - - - - - - - 安装JDK开始 - - - - - - - - - - - - - - - - - - - - #
+# 安装JDK环境 先搜索可用的包
+sudo yum search jdk
+
+# 安装JDK1.8
+sudo yum install -y java-1.8.0-openjdk-devel.x86_64
+
+# 安装其他依赖库
+sudo yum install -y openssh-clients
+sudo yum install -y net-tools
+sudo yum install -y vim
+sudo yum install -y wget
+sudo yum install -y lrzsz
+sudo yum install -y pcre 
+sudo yum install -y pcre-devel
+sudo yum install -y zlib
+sudo yum install -y zlib-devel
+sudo yum install -y openssl 
+sudo yum install -y openssl-devel
+sudo yum install -y unzip
+sudo yum install -y libtool
+sudo yum install -y gcc-c++
+sudo yum install -y telnet
+sudo yum install -y tree
+sudo yum install -y nano
+sudo yum install -y psmisc
+sudo yum install -y rsync
+sudo yum install -y ntp
+sudo yum install -y epel-release
+sudo yum install -y bind-utils
+sudo yum install -y tcpdump
+sudo yum install -y glibc 
+sudo yum install -y lsof
+sudo yum install -y urw-fonts
+sudo yum install -y bash-completion
+sudo yum install -y bash-completion-extras
+# - - - - - - - - - - - - - - - - - - - - 安装JDK结束 - - - - - - - - - - - - - - - - - - - - #
+
+# - - - - - - - - - - - - - - - - - - - - 安装Docker开始 - - - - - - - - - - - - - - - - - - - - #
+# 手动安装 https://www.runoob.com/docker/centos-docker-install.html
+-- 1、移除已经安装的Docker
+sudo yum remove docker \
+docker-client \
+docker-client-latest \
+docker-common \
+docker-latest \
+docker-latest-logrotate \
+docker-logrotate \
+docker-engine
+
+-- 2、安装Docker依赖库
+sudo yum install -y yum-utils \
+device-mapper-persistent-data \
+lvm2
+
+-- 3、添加Docker镜像源
+sudo yum-config-manager \
+    --add-repo \
+    http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+
+-- 4、安装Docker
+sudo yum install -y docker-ce docker-ce-cli containerd.io
+
+
+# 启动，关闭，重启Docker
+sudo systemctl start docker
+sudo systemctl stop docker
+sudo systemctl restart docker
+sudo systemctl status docker
+
+# 设置Docker开机自启动
+sudo systemctl enable docker
+
+
+# 可选，配置Docker软件镜像源加速地址
+vim /etc/docker/daemon.json
+{
+  "registry-mirrors": [
+    "https://registry.docker-cn.com",
+    "https://mirror.ccs.tencentyun.com",
+    "http://hub-mirror.c.163.com",
+    "https://docker.mirrors.ustc.edu.cn"
+  ]
+}
+
+# 加载daemon镜像地址
+sudo systemctl daemon-reload
+# 重启docker
+
+
+# - - - - - - - - - - - - - - - - - - - - 安装Docker结束 - - - - - - - - - - - - - - - - - - - - #
+
+
+# - - - - - - - - - - - - - - - - - - - - 安装redis镜像开始 - - - - - - - - - - - - - - - - - - - - #
+-- 1、创建redis容器，
+  自动寻找redis镜像执行安装， 
+  容器名称redis, 
+  指定端口映射宿主机6379和容器机6379 
+  镜像来源：redis
+  要求输入密码123456
+docker run -d --name redis -p 6379:6379 redis --requirepass "123456" 
+
+
+[root@localhost ~]# docker run -d --name redis -p 6379:6379 redis --requirepass "123456" 
+Unable to find image 'redis:latest' locally
+latest: Pulling from library/redis
+461246efe0a7: Pull complete 
+edee06fdf403: Pull complete 
+04b7adc9ef61: Pull complete 
+6f4a4580ec0b: Pull complete 
+b70fc086369d: Pull complete 
+242936d47e59: Pull complete 
+Digest: sha256:d71065e742471ec455fec733d154f9703ed96c6150d1a2a025f0a117d8e116ae
+Status: Downloaded newer image for redis:latest
+824fed66f327f6bc47801d99957675dcf5ccf132b892e5afc6d2c12d35663ece
+[root@localhost ~]# 
+
+# 检查容器状态
+docker ps -a
+
+# 如果没有运行，删除容器重新创建运行
+docker rm redis
+
+# 检查失败日志
+docker logs --tail=1000 (容器名)
+
+[root@localhost ~]# docker logs --tail=1000 redis
+
+*** FATAL CONFIG FILE ERROR (Redis 7.0.4) ***
+Reading the configuration file, at line 2
+>>> '"-requirepass" "123456"'
+Bad directive or wrong number of arguments
+[root@localhost ~]# 
+
+# 启动，关闭，重启 Redis容器
+docker start redis/id
+docker stop redis/id
+docker restart redis/id
+
+
+# - - - - - - - - - - - - - - - - - - - - 安装redis镜像结束 - - - - - - - - - - - - - - - - - - - - #
+
+
+# - - - - - - - - - - - - - - - - - - - - 安装FastDFS镜像开始 - - - - - - - - - - - - - - - - - - - - #
+-- 1、IP参数为宿主机IP地址
+-- 2、WEB_PORT改成非80端口
+docker run -d --restart=always \
+--privileged=true \
+--net=host \
+--name=fastdfs \
+-e IP=192.168.124.34 \
+-e WEB_PORT=6378 \
+-v ${HOME}/fastdfs:/var/local/fastdfs registry.cn-beijing.aliyuncs.com/tianzuo/fastdfs
+
+# 配置开放端口
+firewall-cmd --zone=public --add-port=6378/tcp --permanent
+firewall-cmd --reload
+# - - - - - - - - - - - - - - - - - - - - 安装FastDFS镜像结束 - - - - - - - - - - - - - - - - - - - - #
+
+# - - - - - - - - - - - - - - - - - - - - 安装Zookeeper开始 - - - - - - - - - - - - - - - - - - - - #
+tar -zxvf apache-zookeeper-3.5.7-bin.tar.gz
+mv apache-zookeeper-3.5.7-bin /usr/local
+cp -r /usr/local/apache-zookeeper-3.5.7-bin/conf/zoo_sample.cfg /usr/local/apache-zookeeper-3.5.7-bin/conf/zoo.cfg
+vim /usr/local/apache-zookeeper-3.5.7-bin/conf/zoo.cfg
+
+# zoo.cfg 配置参数补充
+# 1、客户端口
+clientPort=2181
+# 2、数据存放目录
+dataDir=/tmp/zookeeper
+# 3、服务端口
+admin.serverPort=2180
+
+# 配置开放端口
+firewall-cmd --zone=public --add-port=2181/tcp --permanent
+firewall-cmd --reload
+
+# 启动，关闭，检查
+/usr/local/apache-zookeeper-3.5.7-bin/bin/zkServer.sh start
+/usr/local/apache-zookeeper-3.5.7-bin/bin/zkServer.sh stop
+/usr/local/apache-zookeeper-3.5.7-bin/bin/zkServer.sh status
+
+# - - - - - - - - - - - - - - - - - - - - 安装Zookeeper结束 - - - - - - - - - - - - - - - - - - - - #
+
+
+# - - - - - - - - - - - - - - - - - - - - 安装Dubbo-Admin开始 - - - - - - - - - - - - - - - - - - - - #
+1、使用资料提供的dubbo-admin-master源码解压
+2、进入dubbo-admin目录
+3、打开cmd终端，输入mvn package将项目打包
+4、将target目录的dubbo-admin-0.0.1-SNAPSHOT.jar上传到虚拟机中
+5、创建存放目录 mkdir /open-his/dubbo-admin/
+6、挪包过去 mv dubbo-admin-0.0.1-SNAPSHOT.jar /open-his/dubbo-admin
+7、为dubbo-admin编写启停脚本，脚本参考：https://www.cnblogs.com/zxf330301/p/9185294.html
+  - 启动命令 /open-his/dubbo-admin/start.sh
+  - 停止命令 /open-his/dubbo-admin/stop.sh
+  - 检查运行状态 cat /open-his/dubbo-admin/dubbo-admin.log
+8、开放防火墙端口
+  firewall-cmd --zone=public --add-port=7001/tcp --permanent
+  firewall-cmd --reload
+9、访问dubbo-admin [http://虚拟机ip:7001]
+  账户密码：root / root
+# - - - - - - - - - - - - - - - - - - - - 安装Dubbo-Admin结束 - - - - - - - - - - - - - - - - - - - - #
+
+# - - - - - - - - - - - - - - - - - - - - 安装MySQL开始 - - - - - - - - - - - - - - - - - - - - #
+下载对应版本的mysql红帽包
+[root@localhost ~]# tar -xvf mysql-5.7.37-1.el7.x86_64.rpm-bundle.tar
+mysql-community-client-5.7.37-1.el7.x86_64.rpm
+mysql-community-common-5.7.37-1.el7.x86_64.rpm
+mysql-community-devel-5.7.37-1.el7.x86_64.rpm
+mysql-community-embedded-5.7.37-1.el7.x86_64.rpm
+mysql-community-embedded-compat-5.7.37-1.el7.x86_64.rpm
+mysql-community-embedded-devel-5.7.37-1.el7.x86_64.rpm
+mysql-community-libs-5.7.37-1.el7.x86_64.rpm
+mysql-community-libs-compat-5.7.37-1.el7.x86_64.rpm
+mysql-community-server-5.7.37-1.el7.x86_64.rpm
+mysql-community-test-5.7.37-1.el7.x86_64.rpm
+[root@localhost ~]# 
+
+-- 如果虚拟机不是按照[最小安装]设定的初始化系统，检查是否存在mariadb，如果存在需要先删除
+# 按下面步骤执行rpm包安装
+sudo rpm -ivh --nodeps --force mysql-community-common-5.7.37-1.el7.x86_64.rpm
+sudo rpm -ivh --nodeps --force mysql-community-libs-5.7.37-1.el7.x86_64.rpm
+sudo rpm -ivh --nodeps --force mysql-community-libs-compat-5.7.37-1.el7.x86_64.rpm
+sudo rpm -ivh --nodeps --force mysql-community-client-5.7.37-1.el7.x86_64.rpm
+sudo rpm -ivh --nodeps --force mysql-community-embedded-5.7.37-1.el7.x86_64.rpm
+sudo rpm -ivh --nodeps --force mysql-community-embedded-compat-5.7.37-1.el7.x86_64.rpm
+sudo rpm -ivh --nodeps --force mysql-community-server-5.7.37-1.el7.x86_64.rpm
+
+# 查看已安装的内容
+rpm -qa | grep mysql 
+[root@localhost ~]# rpm -qa | grep mysql 
+mysql-community-libs-compat-5.7.37-1.el7.x86_64
+mysql-community-server-5.7.37-1.el7.x86_64
+mysql-community-libs-5.7.37-1.el7.x86_64
+mysql-community-client-5.7.37-1.el7.x86_64
+mysql-community-embedded-compat-5.7.37-1.el7.x86_64
+mysql-community-common-5.7.37-1.el7.x86_64
+mysql-community-embedded-5.7.37-1.el7.x86_64
+
+# 初始化
+mysqld --initialize --console
+
+# 目录可写权限赋予
+chown -R mysql:mysql /var/lib/mysql/
+
+# 开启MySQL并查看状态
+service mysqld start
+service mysqld status
+
+[root@localhost ~]# service mysqld start
+Redirecting to /bin/systemctl start mysqld.service
+[root@localhost ~]# service mysqld status
+Redirecting to /bin/systemctl status mysqld.service
+● mysqld.service - MySQL Server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: active (running) since 三 2022-07-20 23:48:29 CST; 848ms ago
+     Docs: man:mysqld(8)
+           http://dev.mysql.com/doc/refman/en/using-systemd.html
+  Process: 2598 ExecStart=/usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid $MYSQLD_OPTS (code=exited, status=0/SUCCESS)
+  Process: 2576 ExecStartPre=/usr/bin/mysqld_pre_systemd (code=exited, status=0/SUCCESS)
+ Main PID: 2601 (mysqld)
+    Tasks: 27
+   Memory: 194.2M
+   CGroup: /system.slice/mysqld.service
+           └─2601 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid
+
+7月 20 23:48:27 localhost.localdomain systemd[1]: Starting MySQL Server...
+7月 20 23:48:29 localhost.localdomain systemd[1]: Started MySQL Server.
+[root@localhost ~]# 
+
+# 读取日志信息以获取初始化的密码
+grep 'temporary password' /var/log/mysqld.log
+
+# 登录mysql
+mysql -u root -p
+
+
+# 更改密码和访问限制
+ALTER USER 'root'@'localhost' IDENTIFIED BY '123456' PASSWORD EXPIRE NEVER; 
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
+UPDATE mysql.`user` SET host = "%" WHERE user = "root";
+FLUSH PRIVILEGES;
+QUIT;
+
+# 开放端口
+firewall-cmd --zone=public --add-port=3306/tcp --permanent
+firewall-cmd --reload
+
+# - - - - - - - - - - - - - - - - - - - - 安装MySQL结束 - - - - - - - - - - - - - - - - - - - - #
