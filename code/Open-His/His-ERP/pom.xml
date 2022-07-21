@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>His-ERP</artifactId>
+    <description>ERP服务</description>
     <packaging>pom</packaging>
     <modules>
         <module>His-ERP-API</module>

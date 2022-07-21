@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>His-Doctor</artifactId>
+    <description>看病就诊服务</description>
     <packaging>pom</packaging>
     <modules>
         <module>His-Doctor-API</module>
