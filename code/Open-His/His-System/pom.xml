@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>Open-His</artifactId>
+        <groupId>cn.cloud9</groupId>
+        <version>1.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>His-System</artifactId>
+    <packaging>pom</packaging>
+    <description>系统管理-子系统</description>
+    <modules>
+        <module>His-System-API</module>
+        <module>His-System-Domain</module>
+        <module>His-System-Mapper</module>
+        <module>His-System-Service</module>
+        <module>His-System-Web</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.cloud9</groupId>
+            <artifactId>His-Commons</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
