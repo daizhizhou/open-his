@@ -356,3 +356,35 @@ firewall-cmd --zone=public --add-port=3306/tcp --permanent
 firewall-cmd --reload
 
 # - - - - - - - - - - - - - - - - - - - - 安装MySQL结束 - - - - - - - - - - - - - - - - - - - - #
+
+# - - - - - - - - - - - - - - - - - - - - 安装YAPI在线接口文档开始 - - - - - - - - - - - - - - - - - - - - #
+
+1、首先需要mongoDB环境
+docker run -d --name mongo-yapi mongo
+
+2、从指定cdn地址拉取yapi 镜像
+docker pull registry.cn-hangzhou.aliyuncs.com/anoy/yapi
+
+3、按指定参数初始化YAPI 数据库和账号？
+docker run -it --rm \
+  --link mongo-yapi:mongo \
+  --entrypoint npm \
+  --workdir /api/vendors \
+  registry.cn-hangzhou.aliyuncs.com/anoy/yapi \
+  run install-server
+
+初始化管理员账号成功,账号名："admin@admin.com"，密码："ymfe.org"
+
+4、 启动 Yapi 服务
+docker run -d \
+  --name yapi \
+  --link mongo-yapi:mongo \
+  --workdir /api/vendors \
+  -p 3000:3000 \
+  registry.cn-hangzhou.aliyuncs.com/anoy/yapi \
+  server/app.js
+
+5、访问地址
+http://192.168.124.34:3000
+
+# - - - - - - - - - - - - - - - - - - - - 安装YAPI在线接口文档结束 - - - - - - - - - - - - - - - - - - - - #
