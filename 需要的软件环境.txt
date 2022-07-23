@@ -18,3 +18,4 @@
 3、Maven
 4、VsCode 或者 WebStorm
 6、Navicat15
+7、Node 12版本
