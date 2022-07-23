@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import { MessageBox, Message, Notification } from 'element-ui'
 
 // create an axios instance
 const service = axios.create({
@@ -60,11 +60,11 @@ service.interceptors.response.use(
         store.dispatch('user/logout').then(() => location.reload())
       })
     } else if (res.code === 500) {
-      Notification.error({ title: '系统异常' })
+      Notification.error({ title: '系统提示', message: res.msg })
       // todo ...
       return Promise.reject('error')
     } else if (res.code !== 200) {
-      Notification.error({ title: res.msg })
+      Notification.error({ title: '系统异常', message: res.msg })
       // todo ...
       return Promise.reject('error')
     } else {
