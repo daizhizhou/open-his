@@ -37,8 +37,13 @@ mybatis-plus:
 dubbo:
   application:
     name: his-doctor-service
+  config-center:
+    timeout: 10000
+  metadata-report:
+    timeout: 10000
   registry:
     address: zookeeper://${cloud9.host}:2181
+    timeout: 10000
   protocol:
     port: -1   #随机端口
     name: dubbo

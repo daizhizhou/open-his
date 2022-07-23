@@ -1,3 +1,18 @@
 
 1、Cannot resolve com.sun:tools:1.8
 连接池Druid-Boot-Starter报错，更换Maven版本 3.8.2 -> 3.6.3
+
+2、Dubbo连接Zookeeper连接不上
+https://www.cnblogs.com/xiluhua/p/13947442.html
+追加超时上限
+dubbo:
+  metadata-report:
+    timeout: 10000
+  config-center:
+    timeout: 10000
+  registry:
+    timeout: 10000
+
+3、设置Dashboard面板操作启动类
+https://www.136.la/jingpin/show-189385.html
+
