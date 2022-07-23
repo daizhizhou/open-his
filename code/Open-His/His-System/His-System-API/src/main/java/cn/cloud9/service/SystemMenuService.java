@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
-public interface SystemMenuService extends IService<SystemMenu>{
+public interface SystemMenuService extends IService<SystemMenu> {
     /**
      * 查询菜单信息
      * 如查用户是超级管理员，那么查询所以菜单和权限

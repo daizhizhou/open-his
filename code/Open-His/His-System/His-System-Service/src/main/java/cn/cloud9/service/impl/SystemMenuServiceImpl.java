@@ -24,9 +24,9 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuMapper, SystemM
         //根据用户id查询用户拥有的菜单信息，因为RBAC还没开发，暂时返回一样的菜单，即全部菜单
         return baseMapper.selectList(
             new LambdaQueryWrapper<SystemMenu>()
-                .eq(SystemMenu::getStatus, ApiConstant.STATUS_TRUE)
-                .in(SystemMenu::getMenuType, ApiConstant.MENU_TYPE_M, ApiConstant.MENU_TYPE_C)
-                .orderByAsc(SystemMenu::getParentId)
+            .eq(SystemMenu::getStatus, ApiConstant.STATUS_TRUE)
+            .in(SystemMenu::getMenuType, ApiConstant.MENU_TYPE_M, ApiConstant.MENU_TYPE_C)
+            .orderByAsc(SystemMenu::getParentId)
         );
     }
 }
