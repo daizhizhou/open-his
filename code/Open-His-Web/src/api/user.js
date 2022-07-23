@@ -39,3 +39,14 @@ export function logout() {
     method: 'get'
   })
 }
+
+/**
+ * 获取该用户的菜单
+ * @returns
+ */
+export function getSystemMenus() {
+  return request({
+    url: '/login/getMenus',
+    method: 'get'
+  })
+}

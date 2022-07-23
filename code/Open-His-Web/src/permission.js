@@ -35,7 +35,8 @@ router.beforeEach(async(to, from, next) => {
           // 如果没有这个用户，调用后台接口获取，重新存入store
           await store.dispatch('user/getInfo')
           // 分配动态路由
-          const accessRoutes = await store.dispatch('permission/generateRoutes', ['admin'])
+          // const accessRoutes = await store.dispatch('permission/generateRoutes', ['admin'])
+          const accessRoutes = await store.dispatch('menu/getMenus')
           // 添加动态路由，到主路由中
           router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
