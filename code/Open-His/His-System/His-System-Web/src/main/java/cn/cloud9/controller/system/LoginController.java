@@ -9,6 +9,7 @@ import cn.cloud9.vo.ActiveUser;
 import cn.cloud9.vo.AjaxResult;
 import cn.cloud9.vo.LoginBodyDTO;
 import cn.cloud9.vo.MenuTreeVO;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +48,12 @@ public class LoginController {
      * @return 结果
      */
     @PostMapping("/doLogin")
-    public AjaxResult login(@RequestBody LoginBodyDTO loginBodyDto, HttpServletRequest request) {
+    public AjaxResult login(
+        @RequestBody
+        @Validated
+        LoginBodyDTO loginBodyDto,
+        HttpServletRequest request
+    ) {
         AjaxResult ajax = AjaxResult.success();
         String username = loginBodyDto.getUsername();
         String password = loginBodyDto.getPassword();
