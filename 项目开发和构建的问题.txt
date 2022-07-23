@@ -19,7 +19,9 @@ https://www.136.la/jingpin/show-189385.html
 
 npm config set registry https://registry.npm.taobao.org
 
--- 安装完依赖后，run dev报错
+-- 安装完依赖后，run dev报错 因为之前删除了这些页面,所以在router路由中,
+1 需要重新配置components
+2 nested 是以一个依赖放入的,删除引入的组件即可
  ERROR  Failed to compile with 10 errors                                                                                                13:13:53
 These dependencies were not found:
 
@@ -35,3 +37,6 @@ These dependencies were not found:
 * @/views/profile/index in ./src/router/index.js
 
 To install them, you can run: npm install --save @/views/documentation/index @/views/error-log/index @/views/nested/menu1/index @/views/nested/menu1/menu1-1 @/views/nested/menu1/menu1-2 @/views/nested/menu1/menu1-2/menu1-2-1 @/views/nested/menu1/menu1-2/menu1-2-2 @/views/nested/menu1/menu1-3 @/views/nested/menu2/index @/views/profile/index
+
+
+教程使用Node12版本,推荐用14版本
