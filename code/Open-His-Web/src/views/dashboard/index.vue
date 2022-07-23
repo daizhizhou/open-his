@@ -17,6 +17,7 @@ export default {
       currentRole: 'adminDashboard'
     }
   }
+  // 不按照roles角色强制跳转
   // computed: {
   //   ...mapGetters([
   //     'roles'
