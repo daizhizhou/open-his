@@ -2,7 +2,8 @@ package cn.cloud9.mapper;
 
 import cn.cloud9.domain.SystemRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.apache.ibatis.annotations.Param;
+
 
 import java.util.List;
 
@@ -20,4 +21,11 @@ public interface SystemRoleMapper extends BaseMapper<SystemRole> {
      * @param ids
      */
     void deleteRoleUserByRoleIds(@Param("ids") List<Long> ids);
+
+    /**
+     * 保存角色和菜单之关的关系
+     * @param roleId
+     * @param menuId
+     */
+    void saveRoleMenu(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
 }

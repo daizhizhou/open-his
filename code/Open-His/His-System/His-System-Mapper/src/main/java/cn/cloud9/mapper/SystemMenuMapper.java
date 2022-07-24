@@ -2,7 +2,9 @@ package cn.cloud9.mapper;
 
 import cn.cloud9.domain.SystemMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface SystemMenuMapper extends BaseMapper<SystemMenu> {
     /**
@@ -11,7 +13,13 @@ public interface SystemMenuMapper extends BaseMapper<SystemMenu> {
      * @param menuId
      * @return
      */
-    @Select("SELECT count(1) FROM `sys_menu` WHERE `parent_id` = #{menuId}")
-    Long queryChildCountByMenuId(Long menuId);
+    Long queryChildCountByMenuId(@Param("menuId") Long menuId);
 
+    /**
+     * 根据角色ID查询所有选中的权限菜单ID【只查子节点的】
+     *
+     * @param roleId
+     * @return
+     */
+    List<Long> queryMenuIdsByRoleId(@Param("roleId") Long roleId);
 }

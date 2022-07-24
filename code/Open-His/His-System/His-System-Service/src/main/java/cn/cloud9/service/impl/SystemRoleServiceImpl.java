@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.cloud9.mapper.SystemRoleMapper;
@@ -77,5 +78,12 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleMapper, SystemR
             return this.baseMapper.deleteBatchIds(ids);
         }
         return 0;
+    }
+
+    @Override
+    public void saveRoleMenu(Long roleId, Long[] menuIds) {
+        //根据角色ID删除sys_role_menu的数据
+        this.baseMapper.deleteRoleMenuByRoleIds(Collections.singletonList(roleId));
+        Arrays.asList(menuIds).forEach(menuId -> baseMapper.saveRoleMenu(roleId,menuId));
     }
 }

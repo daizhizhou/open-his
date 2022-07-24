@@ -2,17 +2,18 @@ package cn.cloud9.service.impl;
 
 import cn.cloud9.contants.ApiConstant;
 import cn.cloud9.domain.SimpleUser;
+import cn.cloud9.domain.SystemMenu;
+import cn.cloud9.mapper.SystemMenuMapper;
+import cn.cloud9.service.SystemMenuService;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+
 import java.util.List;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.cloud9.mapper.SystemMenuMapper;
-import cn.cloud9.domain.SystemMenu;
-import cn.cloud9.service.SystemMenuService;
+
 @Service
 public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuMapper, SystemMenu> implements SystemMenuService{
 
@@ -75,5 +76,10 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuMapper, SystemM
     @Override
     public boolean hasChildByMenuId(Long menuId) {
         return this.baseMapper.queryChildCountByMenuId(menuId) > 0L;
+    }
+
+    @Override
+    public List<Long> getMenusIdsByRoleId(Long roleId) {
+        return this.baseMapper.queryMenuIdsByRoleId(roleId);
     }
 }

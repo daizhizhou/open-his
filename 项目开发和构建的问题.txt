@@ -46,3 +46,10 @@ To install them, you can run: npm install --save @/views/documentation/index @/v
 mybatis-code-helper-pro破解包
 https://zhile.io/2019/04/23/mybatis-code-helper-pro-crack.html
 https://3.jetbra.in/
+
+
+Mybatis 不能xml和注解同时使用
+https://blog.csdn.net/liangcheng0523/article/details/106882135/
+1、注意SpringBoot yml配置是否能读取xml文件
+2、mapper引用正常？
+3、其他问题

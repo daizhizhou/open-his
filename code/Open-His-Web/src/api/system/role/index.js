@@ -38,3 +38,14 @@ export function getRoleById(id) {
     method: 'get'
   })
 }
+// 保存角色和菜单权限之间的关系
+export function saveRoleMenu(roleId, menuIds) {
+  // 处理如果没有选择菜单数据。无法匹配后台数据的问题
+  if (menuIds.length === 0) {
+    menuIds = [-1]
+  }
+  return request({
+    url: '/system/role/saveRoleMenu/' + roleId + '/' + menuIds,
+    method: 'post'
+  })
+}

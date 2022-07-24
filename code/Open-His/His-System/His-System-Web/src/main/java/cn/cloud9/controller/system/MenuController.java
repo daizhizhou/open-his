@@ -81,4 +81,14 @@ public class MenuController {
             AjaxResult.fail("当前要删除的菜单有子节点，请先删除子节点") :
             AjaxResult.toAjax(this.systemMenuService.deleteMenuById(menuId));
     }
+
+
+    /**
+     * 根据角色ID查询菜单权限ID数据
+     */
+    @GetMapping("getMenuIdsByRoleId/{roleId}")
+    public AjaxResult getMenuIdsByRoleId(@PathVariable Long roleId){
+        List<Long> ids = this.systemMenuService.getMenusIdsByRoleId(roleId);
+        return AjaxResult.success(ids);
+    }
 }
