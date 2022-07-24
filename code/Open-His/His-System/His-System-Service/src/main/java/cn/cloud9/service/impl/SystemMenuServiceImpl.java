@@ -4,6 +4,7 @@ import cn.cloud9.contants.ApiConstant;
 import cn.cloud9.domain.SimpleUser;
 import cn.cloud9.domain.SystemMenu;
 import cn.cloud9.mapper.SystemMenuMapper;
+import cn.cloud9.mapper.SystemRoleMapper;
 import cn.cloud9.service.SystemMenuService;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
@@ -12,10 +13,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuMapper, SystemMenu> implements SystemMenuService{
+
+    @Resource
+    private SystemRoleMapper systemRoleMapper;
 
     @Override
     public List<SystemMenu> selectMenuTree(boolean isAdmin, SimpleUser simpleUser) {
@@ -69,6 +75,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuMapper, SystemM
     @Override
     public int deleteMenuById(Long menuId) {
         //先删除role_menu的中间表的数据【后面再加】
+        this.systemRoleMapper.deleteRoleMenuByMenuIds(Arrays.asList(menuId));
         //再删除菜单或权限
         return this.baseMapper.deleteById(menuId);
     }

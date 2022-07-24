@@ -45,4 +45,22 @@
       </foreach>
     </where>
   </delete>
+
+  <delete id="deleteRoleUserByUserIds">
+    delete from sys_role_user
+    <where>
+      <foreach collection="ids" open=" user_id in (" separator="," close=")" item="sn">
+        #{sn}
+      </foreach>
+    </where>
+  </delete>
+
+  <delete id="deleteRoleMenuByMenuIds">
+    delete from sys_role_menu
+    <where>
+      <foreach collection="ids" open=" menu_id in (" separator="," close=")" item="sn">
+        #{sn}
+      </foreach>
+    </where>
+  </delete>
 </mapper>

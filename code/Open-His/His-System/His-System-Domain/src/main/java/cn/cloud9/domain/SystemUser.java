@@ -1,9 +1,11 @@
 package cn.cloud9.domain;
 
+import cn.cloud9.dto.BaseDTO;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
@@ -11,6 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
     * 用户信息表
@@ -20,8 +25,14 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=true)
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(value = {
+    "salt",
+    "password",
+    "unionId",
+    "openId"
+})
 @TableName(value = "sys_user")
-public class SystemUser extends BaseEntity {
+public class SystemUser extends BaseDTO {
     private static final long serialVersionUID = 4782620580335024751L;
     /**
      * 用户ID
@@ -33,6 +44,7 @@ public class SystemUser extends BaseEntity {
     /**
      * 部门ID
      */
+    @NotNull(message = "用户所属部门不能为空")
     @TableField(value = "dept_id")
     @ApiModelProperty(value="部门ID")
     private Long deptId;
@@ -40,6 +52,7 @@ public class SystemUser extends BaseEntity {
     /**
      * 用户账号
      */
+    @NotBlank(message = "用户账号不能为空")
     @TableField(value = "user_name")
     @ApiModelProperty(value="用户账号")
     private String userName;
@@ -54,6 +67,7 @@ public class SystemUser extends BaseEntity {
     /**
      * 用户性别（0男 1女 2未知）
      */
+    @NotBlank(message = "用户性别不能为空")
     @TableField(value = "sex")
     @ApiModelProperty(value="用户性别（0男 1女 2未知）")
     private String sex;
@@ -75,6 +89,7 @@ public class SystemUser extends BaseEntity {
     /**
      * 学历 sys_dict_type:sys_user_background
      */
+    @NotBlank(message = "用户学历不能为空")
     @TableField(value = "background")
     @ApiModelProperty(value="学历 sys_dict_type:sys_user_background")
     private String background;
@@ -108,9 +123,9 @@ public class SystemUser extends BaseEntity {
     private String introduction;
 
     /**
-     * 
-医生级别sys_dict_type:sys_user_level
+     * 医生级别sys_dict_type:sys_user_level
      */
+    @NotBlank(message = "医生级别不能为空")
     @TableField(value = "user_rank")
     @ApiModelProperty(value=",医生级别sys_dict_type:sys_user_level")
     private String userRank;
@@ -192,6 +207,7 @@ public class SystemUser extends BaseEntity {
     /**
      * 是否需要参与排班0需要,1 不需要
      */
+    @NotBlank(message = "是否需要参与排班不能为空")
     @TableField(value = "scheduling_flag")
     @ApiModelProperty(value="是否需要参与排班0需要,1 不需要")
     private String schedulingFlag;
@@ -199,6 +215,7 @@ public class SystemUser extends BaseEntity {
     /**
      * 电话
      */
+    @NotBlank(message = "用户电话不能为空")
     @TableField(value = "phone")
     @ApiModelProperty(value="电话")
     private String phone;
