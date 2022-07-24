@@ -16,4 +16,45 @@ public interface SystemMenuService extends IService<SystemMenu> {
      */
     List<SystemMenu> selectMenuTree(boolean isAdmin, SimpleUser simpleUser);
 
+    /**
+     * 根据条件查询所有菜单
+     * @param menuDto
+     * @return
+     */
+    List<SystemMenu> listAllMenus(SystemMenu menuDto);
+
+    /**
+     * 根据ID查询菜单和权限
+     * @param menuId
+     * @return
+     */
+    SystemMenu getOne(Long menuId);
+
+    /**
+     * 添加菜单或权限
+     * @param menuDto
+     * @return
+     */
+    int addMenu(SystemMenu menuDto);
+
+    /**
+     * 修改菜单或权限
+     * @param menuDto
+     * @return
+     */
+    int updateMenu(SystemMenu menuDto);
+
+    /**
+     * 根据ID删除菜单或权限
+     * @param menuId
+     * @return
+     */
+    int deleteMenuById(Long menuId);
+
+    /**
+     * 根据菜单ID判断菜单是否有子节点
+     * @param menuId
+     * @return
+     */
+    boolean hasChildByMenuId(Long menuId);
 }

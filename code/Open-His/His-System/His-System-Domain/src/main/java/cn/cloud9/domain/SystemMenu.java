@@ -1,5 +1,6 @@
 package cn.cloud9.domain;
 
+import cn.cloud9.dto.BaseDTO;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -12,6 +13,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
     * 菜单权限表
     */
@@ -21,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "sys_menu")
-public class SystemMenu extends BaseEntity {
+public class SystemMenu extends BaseDTO {
     private static final long serialVersionUID = 2290391493413382241L;
     /**
      * 菜单ID
@@ -47,6 +50,7 @@ public class SystemMenu extends BaseEntity {
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
+    @NotNull(message = "菜单类型不能为空")
     @TableField(value = "menu_type")
     @ApiModelProperty(value="菜单类型（M目录 C菜单 F按钮）")
     private String menuType;
@@ -54,6 +58,7 @@ public class SystemMenu extends BaseEntity {
     /**
      * 菜单名称
      */
+    @NotNull(message = "菜单名称不能为空")
     @TableField(value = "menu_name")
     @ApiModelProperty(value="菜单名称")
     private String menuName;
@@ -110,6 +115,7 @@ public class SystemMenu extends BaseEntity {
     /**
      * 菜单状态（0正常 1停用）
      */
+    @NotNull(message = "菜单状态不能为空")
     @TableField(value = "`status`")
     @ApiModelProperty(value="菜单状态（0正常 1停用）")
     private String status;

@@ -21,10 +21,11 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
 // - - - - - start - - - - -
-import { resetForm, addDateRange, selectDictLabel } from '@/utils/his-utils'
+import { resetForm, addDateRange, selectDictLabel, handleTree } from '@/utils/his-utils'
 import { getDataByType } from '@/api/system/dict/data'
 
 // 全局方法挂载
+Vue.prototype.handleTree = handleTree
 Vue.prototype.resetForm = resetForm
 Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel

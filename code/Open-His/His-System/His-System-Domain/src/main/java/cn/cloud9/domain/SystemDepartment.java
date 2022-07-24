@@ -13,6 +13,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
     * 部门/科室表
     */
@@ -34,6 +36,7 @@ public class SystemDepartment extends BaseDTO {
     /**
      * 科室编号
      */
+    @NotNull(message = "科室编号不能为空")
     @TableField(value = "dept_number")
     @ApiModelProperty(value="科室编号")
     private String deptNumber;
@@ -41,6 +44,7 @@ public class SystemDepartment extends BaseDTO {
     /**
      * 部门名称
      */
+    @NotNull(message = "科室名称不能为空")
     @TableField(value = "dept_name")
     @ApiModelProperty(value="部门名称")
     private String deptName;
@@ -48,6 +52,7 @@ public class SystemDepartment extends BaseDTO {
     /**
      * 挂号编号
      */
+    @NotNull(message = "挂号编号不能为空")
     @TableField(value = "reg_number")
     @ApiModelProperty(value="挂号编号")
     private Integer regNumber;
@@ -55,6 +60,7 @@ public class SystemDepartment extends BaseDTO {
     /**
      * 显示顺序
      */
+    @NotNull(message = "排序码不能为空")
     @TableField(value = "order_num")
     @ApiModelProperty(value="显示顺序")
     private Integer orderNum;
@@ -76,6 +82,7 @@ public class SystemDepartment extends BaseDTO {
     /**
      * 部门状态（0正常 1停用）
      */
+    @NotNull(message = "科室状态不能为空")
     @TableField(value = "`status`")
     @ApiModelProperty(value="部门状态（0正常 1停用）")
     private String status;
