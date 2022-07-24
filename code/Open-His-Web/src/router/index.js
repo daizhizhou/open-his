@@ -140,7 +140,7 @@ export const asyncRoutes = [
       },
       {
         path: 'ins_fee',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/open-his/system/check-item/index'),
         name: '/system/ins_fee',
         meta: {
           title: '检查费用设置',
