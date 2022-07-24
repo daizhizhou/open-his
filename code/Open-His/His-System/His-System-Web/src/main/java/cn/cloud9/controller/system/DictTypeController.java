@@ -1,5 +1,7 @@
 package cn.cloud9.controller.system;
 
+import cn.cloud9.aspect.annotation.SystemLog;
+import cn.cloud9.aspect.enums.BusinessType;
 import cn.cloud9.domain.SystemDictType;
 import cn.cloud9.service.SystemDictTypeService;
 import cn.cloud9.util.ShiroSecurityUtil;
@@ -37,6 +39,7 @@ public class DictTypeController {
      * 添加
      */
     @PostMapping("/addDictType")
+    @SystemLog(title = "新增字典类型", businessType = BusinessType.INSERT)
     public AjaxResult addDictType(@Validated SystemDictType dictTypeDto) {
         if (systemDictTypeService.checkDictTypeUnique(dictTypeDto.getDictId(), dictTypeDto.getDictType())) {
             return AjaxResult.fail("新增字典【" + dictTypeDto.getDictName() + "】失败，字典类型已存在");
@@ -49,6 +52,7 @@ public class DictTypeController {
      * 修改
      */
     @PutMapping("/updateDictType")
+    @SystemLog(title = "更新字典类型", businessType = BusinessType.UPDATE)
     public AjaxResult updateDictType(@Validated SystemDictType dictTypeDto) {
         if (systemDictTypeService.checkDictTypeUnique(dictTypeDto.getDictId(), dictTypeDto.getDictType())) {
             return AjaxResult.fail("修改字典【" + dictTypeDto.getDictName() + "】失败，字典类型已存在");
@@ -70,6 +74,7 @@ public class DictTypeController {
      * 删除
      */
     @DeleteMapping("/deleteDictTypeByIds/{dictIds}")
+    @SystemLog(title = "删除字典类型", businessType = BusinessType.DELETE)
     public AjaxResult updateDictType(
         @PathVariable
         @Validated

@@ -1,5 +1,7 @@
 package cn.cloud9.controller.system;
 
+import cn.cloud9.aspect.annotation.SystemLog;
+import cn.cloud9.aspect.enums.BusinessType;
 import cn.cloud9.domain.SystemDictData;
 import cn.cloud9.service.SystemDictDataService;
 import cn.cloud9.util.ShiroSecurityUtil;
@@ -37,6 +39,7 @@ public class DictDataController {
      * 添加
      */
     @PostMapping("addDictData")
+    @SystemLog(title = "新增字典数据", businessType = BusinessType.INSERT)
     public AjaxResult addDictData(@Validated SystemDictData dictDataDto) {
         dictDataDto.setSimpleUser(ShiroSecurityUtil.getCurrentSimpleUser());
         return AjaxResult.toAjax(this.systemDictDataService.insert(dictDataDto));
@@ -46,6 +49,7 @@ public class DictDataController {
      * 修改
      */
     @PutMapping("updateDictData")
+    @SystemLog(title = "更新字典数据",businessType = BusinessType.UPDATE)
     public AjaxResult updateDictData(@Validated SystemDictData dictDataDto) {
         dictDataDto.setSimpleUser(ShiroSecurityUtil.getCurrentSimpleUser());
         return AjaxResult.toAjax(this.systemDictDataService.update(dictDataDto));
@@ -64,6 +68,7 @@ public class DictDataController {
      * 删除
      */
     @DeleteMapping("deleteDictDataByIds/{dictCodeIds}")
+    @SystemLog(title = "删除字典数据",businessType = BusinessType.DELETE)
     public AjaxResult updateDictData(@PathVariable @Validated @NotEmpty(message = "要删除的ID不能为空") Long[] dictCodeIds) {
         return AjaxResult.toAjax(this.systemDictDataService.deleteDictDataByIds(dictCodeIds));
     }
