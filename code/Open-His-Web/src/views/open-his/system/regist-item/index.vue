@@ -1,42 +1,17 @@
 <template>
   <div class="app-container">
     <!-- 查询条件开始 -->
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="88px">
       <el-form-item v-show="false" label="每页数量" prop="pageSize" />
       <el-form-item v-show="false" label="当前页码" prop="pageNum" />
-      <el-form-item label="项目名称" prop="checkItemName">
+      <el-form-item label="挂号费名称" prop="regItemName">
         <el-input
-          v-model="queryParams.checkItemName"
-          placeholder="请输入项目名称"
+          v-model="queryParams.regItemName"
+          placeholder="请输入挂号费名称"
           clearable
           size="small"
           style="width:240px"
         />
-      </el-form-item>
-      <el-form-item label="关键字" prop="keywords">
-        <el-input
-          v-model="queryParams.keywords"
-          placeholder="请输入关键字"
-          clearable
-          size="small"
-          style="width:240px"
-        />
-      </el-form-item>
-      <el-form-item label="项目类型" prop="typeId">
-        <el-select
-          v-model="queryParams.typeId"
-          placeholder="项目类型"
-          clearable
-          size="small"
-          style="width:240px"
-        >
-          <el-option
-            v-for="dict in typeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select
@@ -54,7 +29,6 @@
           />
         </el-select>
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -77,15 +51,11 @@
     <!-- 表格工具按钮结束 -->
 
     <!-- 数据表格开始 -->
-    <el-table v-loading="loading" border :data="checkItemTableList" @selection-change="handleSelectionChnage">
+    <el-table v-loading="loading" border :data="registeredItemTableList" @selection-change="handleSelectionChnage">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="项目ID" align="center" prop="checkItemId" />
-      <el-table-column label="项目名称" align="center" prop="checkItemName" />
-      <el-table-column label="关键字" align="center" prop="keywords" />
-      <el-table-column label="项目单价" align="center" prop="unitPrice" />
-      <el-table-column label="项目成本" align="center" prop="cost" />
-      <el-table-column label="单位" align="center" prop="unit" />
-      <el-table-column label="项目类别" align="center" prop="typeId" :formatter="typeFormatter" />
+      <el-table-column label="挂号项目ID" align="center" prop="regItemId" />
+      <el-table-column label="挂号项目名称" align="center" prop="regItemName" />
+      <el-table-column label="挂号费用" align="center" prop="regItemFee" />
       <el-table-column label="状态" prop="status" align="center" :formatter="statusFormatter" />
       <el-table-column label="创建时间" align="center" prop="createTime" />
       <el-table-column label="操作" align="center">
@@ -118,30 +88,11 @@
       append-to-body
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="项目类型" prop="typeId">
-          <el-radio-group v-model="form.typeId">
-            <el-radio
-              v-for="dict in typeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
-              :value="dict.dictValue"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
+        <el-form-item label="项目名称" prop="regItemName">
+          <el-input v-model="form.regItemName" placeholder="请输入挂号项目名称" clearable size="small" />
         </el-form-item>
-        <el-form-item label="项目名称" prop="checkItemName">
-          <el-input v-model="form.checkItemName" placeholder="请输入项目名称" clearable size="small" />
-        </el-form-item>
-        <el-form-item label="关键字" prop="keywords">
-          <el-input v-model="form.keywords" placeholder="请输入关键字" clearable size="small" />
-        </el-form-item>
-        <el-form-item label="项目价格" prop="unitPrice">
-          <el-input-number v-model="form.unitPrice" placeholder="请输入项目价格" clearable size="small" />
-        </el-form-item>
-        <el-form-item label="项目成本" prop="cost">
-          <el-input-number v-model="form.cost" placeholder="请输入项目成本" clearable size="small" />
-        </el-form-item>
-        <el-form-item label="单位" prop="unit">
-          <el-input v-model="form.unit" placeholder="请输入单位" clearable size="small" />
+        <el-form-item label="项目费用" prop="regItemFee">
+          <el-input-number v-model="form.regItemFee" placeholder="请输入项目费用" clearable size="small" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -165,7 +116,7 @@
 </template>
 <script>
 // 引入api
-import { listCheckItemForPage, addCheckItem, updateCheckItem, getCheckItemById, deleteCheckItemByIds } from '@/api/system/check-item'
+import { listRegisteredItemForPage, addRegisteredItem, updateRegisteredItem, getRegisteredItemById, deleteRegisteredItemByIds } from '@/api/system/regist-item'
 export default {
   // 定义页面数据
   data() {
@@ -181,42 +132,29 @@ export default {
       // 分页数据总条数
       total: 0,
       // 字典表格数据
-      checkItemTableList: [],
+      registeredItemTableList: [],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
       open: false,
       // 状态数据字典
       statusOptions: [],
-      // 项目类型数据字典
-      typeOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        checkItemName: undefined,
-        keywords: undefined,
-        typeId: undefined,
+        regItemName: undefined,
         status: undefined
       },
       // 表单数据
       form: {},
       // 表单校验
       rules: {
-        checkItemName: [
-          { required: true, message: '项目名称不能为空', trigger: 'blur' }
+        regItemName: [
+          { required: true, message: '挂号项目名称不能为空', trigger: 'blur' }
         ],
-        keywords: [
-          { required: true, message: '关键字不能为空', trigger: 'blur' }
-        ],
-        unitPrice: [
-          { required: true, message: '项目价格不能为空', trigger: 'blur' }
-        ],
-        cost: [
-          { required: true, message: '项目成本不能为空', trigger: 'blur' }
-        ],
-        unit: [
-          { required: true, message: '项目单位不能为空', trigger: 'blur' }
+        regItemFee: [
+          { required: true, message: '项目费用不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -227,36 +165,32 @@ export default {
     this.getDataByType('sys_normal_disable').then(res => {
       this.statusOptions = res.data
     })
-    // 使用全局的根据字典类型查询字典数据的方法查询字典数据
-    this.getDataByType('his_inspection_type').then(res => {
-      this.typeOptions = res.data
-    })
     // 查询表格数据
-    this.getCheckItemList()
+    this.getRegisteredItemList()
   },
   // 方法
   methods: {
     // 查询表格数据
-    getCheckItemList() {
+    getRegisteredItemList() {
       this.loading = true // 打开遮罩
-      listCheckItemForPage(this.queryParams).then(res => {
-        this.checkItemTableList = res.data
+      listRegisteredItemForPage(this.queryParams).then(res => {
+        this.registeredItemTableList = res.data
         this.total = res.total
         this.loading = false// 关闭遮罩
       })
     },
     // 条件查询
     handleQuery() {
-      this.getCheckItemList()
+      this.getRegisteredItemList()
     },
     // 重置查询条件
     resetQuery() {
       this.resetForm('queryForm')
-      this.getCheckItemList()
+      this.getRegisteredItemList()
     },
     // 数据表格的多选择框选择时触发
     handleSelectionChnage(selection) {
-      this.ids = selection.map(item => item.checkItemId)
+      this.ids = selection.map(item => item.registeredItemId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -264,55 +198,51 @@ export default {
     handleSizeChange(val) {
       this.queryParams.pageSize = val
       // 重新查询
-      this.getCheckItemList()
+      this.getRegisteredItemList()
     },
     // 点击上一页  下一页，跳转到哪一页面时触发
     handleCurrentChange(val) {
       this.queryParams.pageNum = val
       // 重新查询
-      this.getCheckItemList()
+      this.getRegisteredItemList()
     },
     // 翻译状态
     statusFormatter(row) {
       return this.selectDictLabel(this.statusOptions, row.status)
     },
-    // 翻译类型
-    typeFormatter(row) {
-      return this.selectDictLabel(this.typeOptions, row.typeId)
-    },
     // 打开添加的弹出层
     handleAdd() {
       this.open = true
       this.reset()
-      this.title = '添加检查项目信息'
+      this.title = '添加挂号项目信息'
     },
     // 打开修改的弹出层
     handleUpdate(row) {
-      this.title = '修改检查项目信息'
-      const checkItemId = row.checkItemId || this.ids
+      this.title = '修改挂号项目信息'
+      const regItemId = row.regItemId || this.ids
       // const dictId = row.dictId === undefined ? this.ids[0] : row.dictId
       this.open = true
       this.reset()
       // 根据dictId查询一个字典信息
       this.loading = true
-      getCheckItemById(checkItemId).then(res => {
+      getRegisteredItemById(regItemId).then(res => {
         this.form = res.data
         this.loading = false
       })
     },
     // 执行删除
     handleDelete(row) {
-      const checkItemIds = row.checkItemId || this.ids
-      this.$confirm('此操作将永久删除该检查项目数据, 是否继续?', '提示', {
+      const regItemIds = row.regItemId || this.ids
+      this.$confirm('此操作将永久删除该挂号项目数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.loading = true
-        deleteCheckItemByIds(checkItemIds).then(res => {
+        deleteRegisteredItemByIds(regItemIds).then(res => {
           this.loading = false
           this.msgSuccess('删除成功')
-          this.getCheckItemList()// 全查询
+          this.getRegisteredItemList()// 全查询
         })
       }).catch(() => {
         this.msgError('删除已取消')
@@ -326,21 +256,20 @@ export default {
           // 做添加
           this.loading = true
           const tx = this
-          if (tx.form.checkItemId === undefined) {
-            addCheckItem(tx.form).then(res => {
+          if (tx.form.regItemId === undefined) {
+            addRegisteredItem(tx.form).then(res => {
               tx.msgSuccess('保存成功')
               tx.loading = false
-              tx.getCheckItemList()// 列表重新查询
+              tx.getRegisteredItemList()// 列表重新查询
               tx.open = false// 关闭弹出层
             }).catch(() => {
               tx.loading = false
-              tx.msgError('保存失败')
             })
           } else { // 做修改
-            updateCheckItem(tx.form).then(res => {
+            updateRegisteredItem(tx.form).then(res => {
               tx.msgSuccess('修改成功')
               tx.loading = false
-              tx.getCheckItemList()// 列表重新查询
+              tx.getRegisteredItemList()// 列表重新查询
               tx.open = false// 关闭弹出层
             }).catch(() => {
               tx.loading = false
@@ -358,13 +287,9 @@ export default {
     reset() {
       this.resetForm('form')
       this.form = {
-        checkItemId: undefined,
-        checkItemName: undefined,
-        keywords: undefined,
-        unitPrice: 0.00,
-        cost: 0.00,
-        unit: undefined,
-        typeId: '0',
+        regItemId: undefined,
+        regItemName: undefined,
+        regItemFee: 0,
         status: '0'
       }
     }

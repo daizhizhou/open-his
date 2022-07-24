@@ -4,37 +4,45 @@
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item v-show="false" label="每页数量" prop="pageSize" />
       <el-form-item v-show="false" label="当前页码" prop="pageNum" />
-      <el-form-item label="用户名称" prop="userName">
+
+      <el-form-item label="系统模块" prop="title">
         <el-input
-          v-model="queryParams.userName"
-          placeholder="请输入用户名称"
+          v-model="queryParams.title"
+          placeholder="请输入系统模块"
           clearable
           size="small"
           style="width:200px"
         />
       </el-form-item>
-      <el-form-item label="用户账号" prop="loginAccount">
+      <el-form-item label="操作人员" prop="operName">
         <el-input
-          v-model="queryParams.loginAccount"
-          placeholder="请输入用户账号"
+          v-model="queryParams.operName"
+          placeholder="请输入操作人员"
           clearable
           size="small"
           style="width:200px"
         />
       </el-form-item>
-      <el-form-item label="IP地址" prop="ipAddr">
-        <el-input
-          v-model="queryParams.ipAddr"
-          placeholder="请输入IP地址"
-          clearable
-          size="small"
-          style="width:200px"
-        />
-      </el-form-item>
-      <el-form-item label="登陆状态" prop="loginStatus">
+      <el-form-item label="操作类型" prop="businessType">
         <el-select
-          v-model="queryParams.loginStatus"
-          placeholder="请选择登陆状态"
+          v-model="queryParams.businessType"
+          placeholder="请选择类型"
+          clearable
+          size="small"
+          style="width:200px"
+        >
+          <el-option
+            v-for="dict in businessTypeOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-select
+          v-model="queryParams.status"
+          placeholder="请选择状态"
           clearable
           size="small"
           style="width:200px"
@@ -47,22 +55,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="登陆类型" prop="loginType">
-        <el-select
-          v-model="queryParams.loginType"
-          placeholder="请选择登陆类型"
-          clearable
-          size="small"
-          style="width:200px"
-        >
-          <el-option
-            v-for="dict in loginTypeOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
+
       <el-form-item label="创建时间">
         <el-date-picker
           v-model="dateRange"
@@ -71,8 +64,8 @@
           value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="-"
-          start-placeholde="开始日期"
-          end-placeholde="结束日期"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         />
       </el-form-item>
       <el-form-item>
@@ -93,18 +86,50 @@
     <!-- 工具栏结束 -->
 
     <!-- 数据表格开始 -->
-    <el-table v-loading="loading" border :data="loginInfoTableList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" border :data="operLogTableList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="日志ID" align="center" prop="infoId" />
-      <el-table-column label="用户姓名" align="center" prop="userName" />
-      <el-table-column label="登陆帐号" align="center" prop="loginAccount" />
-      <el-table-column label="IP" width="180" align="center" prop="ipAddr" />
-      <el-table-column label="登陆地址" align="center" prop="loginLocation" />
-      <el-table-column label="浏览器" align="center" prop="browser" />
-      <el-table-column label="操作系统" align="center" prop="os" />
-      <el-table-column label="登陆状态" prop="loginStatus" align="center" :formatter="statusFormatter" />
-      <el-table-column label="用户类型" prop="loginType" align="center" :formatter="loginTypeFormatter" />
-      <el-table-column label="登陆时间" align="center" prop="loginTime" width="200" />
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="操作模块">
+              <span>{{ props.row.title }}</span>
+            </el-form-item>
+            <el-form-item label="登陆信息">
+              <span>{{ props.row.operName }} // {{ props.row.operIp }} // {{ props.row.operLocation }}</span>
+            </el-form-item>
+            <el-form-item label="请求地址">
+              <span>{{ props.row.operUrl }}</span>
+            </el-form-item>
+            <el-form-item label="操作方法">
+              <span>{{ props.row.requestMethod }}</span>
+            </el-form-item>
+            <el-form-item label="请求参数">
+              <span>{{ props.row.operParam }}</span>
+            </el-form-item>
+            <el-form-item label="返回参数">
+              <span>{{ props.row.jsonResult }}</span>
+            </el-form-item>
+            <el-form-item label="操作状态">
+              <span>{{ props.row.status==0?'成功':'失败' }}</span>
+            </el-form-item>
+            <el-form-item label="操作时间">
+              <span>{{ props.row.operTime }}</span>
+            </el-form-item>
+            <el-form-item label="异常信息">
+              <span>{{ props.row.errorMsg }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
+      <el-table-column label="日志ID" align="center" prop="operId" />
+      <el-table-column label="系统模块" align="center" prop="title" />
+      <el-table-column label="操作类型" align="center" prop="businessType" :formatter="businessTypeFormatter" />
+      <el-table-column label="请求方式" width="180" align="center" prop="requestMethod" />
+      <el-table-column label="操作人员" align="center" prop="operName" />
+      <el-table-column label="主机" align="center" prop="operIp" />
+      <el-table-column label="操作地点" align="center" prop="operLocation" />
+      <el-table-column label="操作状态" prop="status" align="center" :formatter="statusFormatter" />
+      <el-table-column label="操作时间" align="center" prop="operTime" width="200" />
       <el-table-column label="操作" align="center" width="100">
         <template slot-scope="scope">
           <el-button v-if="scope.row.userId!=1" type="text" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -130,7 +155,7 @@
 
 <script >
 // 引入接口
-import { listForPage, deleteLoginInfoByIds, clearLoginInfo } from '@/api/system/loginInfo'
+import { listForPage, deleteOperLogByIds, clearAllOperLog } from '@/api/system/operate-log'
 export default ({
   data() {
     return {
@@ -143,21 +168,21 @@ export default ({
       // 总条数
       total: 0,
       // 用户数据数据
-      loginInfoTableList: [],
-      // 登陆状态数据字典
+      operLogTableList: [],
+      // 状态数据字典
       statusOptions: [],
       // 登陆类型数据字典
-      loginTypeOptions: [],
+      businessTypeOptions: [],
       // 时间
       dateRange: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userName: undefined,
-        loginAccount: undefined,
-        loginStatus: undefined,
-        loginType: undefined
+        title: undefined,
+        operName: undefined,
+        status: undefined,
+        businessType: undefined
       }
     }
   },
@@ -166,18 +191,18 @@ export default ({
     this.getDataByType('sys_common_status').then(res => {
       this.statusOptions = res.data
     })
-    // 加载用户级别
-    this.getDataByType('sys_user_type').then(res => {
-      this.loginTypeOptions = res.data
+    // 加载操作类型
+    this.getDataByType('sys_oper_type').then(res => {
+      this.businessTypeOptions = res.data
     })
-    this.getLoginInfoList()
+    this.getOperLogList()
   },
   methods: {
-    // 查询用户信息
-    getLoginInfoList() {
+    // 查询操作信息
+    getOperLogList() {
       this.loading = true
       listForPage(this.addDateRange(this.queryParams, this.dateRange)).then(res => {
-        this.loginInfoTableList = res.data
+        this.operLogTableList = res.data
         this.total = res.total
         this.loading = false
       })
@@ -185,12 +210,12 @@ export default ({
     // 每页显示多少条的数据变化
     handleSizeChange(val) {
       this.queryParams.pageSize = val
-      this.getLoginInfoList()
+      this.getOperLogList()
     },
     // 分页跳转
     handleCurrentChange(val) {
       this.queryParams.pageNum = val
-      this.getLoginInfoList()
+      this.getOperLogList()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -200,36 +225,38 @@ export default ({
     // 查询
     handleQuery() {
       this.queryParams.pageNum = 1
-      this.getLoginInfoList()
+      this.getOperLogList()
     },
     // 重置
     resetQuery() {
       this.dateRange = []
       this.resetForm('queryForm')
-      this.getLoginInfoList()
+      this.getOperLogList()
     },
-    // 翻译登陆状态
+    // 翻译状态
     statusFormatter(row) {
-      return this.selectDictLabel(this.statusOptions, row.loginStatus)
+      return this.selectDictLabel(this.statusOptions, row.status)
     },
-    // 翻译登陆类型
-    loginTypeFormatter(row) {
-      return this.selectDictLabel(this.loginTypeOptions, row.loginType)
+    // 翻译业务类型
+    businessTypeFormatter(row) {
+      console.log(row.businessType)
+      return this.selectDictLabel(this.businessTypeOptions, row.businessType)
     },
     // 删除
     handleDelete(row) {
       const tx = this
-      const logIds = row.infoId || this.ids
-      this.$confirm('是否确认删除登陆日志ID为:' + logIds + '的数据?', '警告', {
+      const operIds = row.operId || this.ids
+      this.$confirm('是否确认删除操作日志ID为:' + operIds + '的数据?', '警告', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消'
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(function() {
-        deleteLoginInfoByIds(logIds).then(res => {
-          tx.getLoginInfoList()
+        deleteOperLogByIds(operIds).then(res => {
           tx.msgSuccess('删除成功')
+          tx.getOperLogList()// 全查询
         })
       }).catch(function() {
-        tx.msgSuccess('删除已取消')
+        tx.msgError('操作已取消')
       })
     },
     // 清空
@@ -239,14 +266,28 @@ export default ({
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(function() {
-        clearLoginInfo().then(res => {
-          tx.getLoginInfoList()
-          tx.msgSuccess('清空成功')
+        clearAllOperLog().then(res => {
+          tx.msgSuccess('删除成功')
+          tx.getOperLogList()// 全查询
         })
       }).catch(function() {
-        tx.msgSuccess('删除失败')
+        tx.msgError('操作已取消')
       })
     }
   }
 })
 </script>
+<style  scoped>
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+</style>

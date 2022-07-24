@@ -122,7 +122,7 @@ export const asyncRoutes = [
       },
       {
         path: 'log_login',
-        component: () => import('@/views/open-his/system/loginInfo/index'),
+        component: () => import('@/views/open-his/system/login-info/index'),
         name: '/system/log_login',
         meta: {
           title: '登陆日志管理',
@@ -131,7 +131,7 @@ export const asyncRoutes = [
       },
       {
         path: 'log_opt',
-        component: () => import('@/views/open-his/system/operateLog/index'),
+        component: () => import('@/views/open-his/system/operate-log/index'),
         name: '/system/log_opt',
         meta: {
           title: '操作日志管理',
@@ -149,7 +149,7 @@ export const asyncRoutes = [
       },
       {
         path: 'reg_fee',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/open-his/system/regist-item/index'),
         name: '/system/reg_fee',
         meta: {
           title: '挂号费用设置',
