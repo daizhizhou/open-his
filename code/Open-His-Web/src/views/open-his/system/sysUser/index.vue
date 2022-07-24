@@ -2,6 +2,8 @@
   <div class="app-container">
     <!-- 查询条件开始 -->
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form-item v-show="false" label="每页数量" prop="pageSize" />
+      <el-form-item v-show="false" label="当前页码" prop="pageNum" />
       <el-form-item label="所属部门" prop="deptId">
         <el-select
           v-model="queryParams.deptId"
@@ -59,8 +61,8 @@
           value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="-"
-          start-placeholde="开始日期"
-          end-placeholde="结束日期"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         />
       </el-form-item>
       <el-form-item>
@@ -120,7 +122,7 @@
       <el-table-column label="背景" prop="background" align="center" :formatter="backgroundFormatter" />
       <el-table-column label="状态" prop="status" align="center" :formatter="statusFormatter" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="200" />
-      <el-table-column label="操作" align="center" width="250">
+      <el-table-column label="操作" align="center" width="250" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button v-if="scope.row.userId!=1" type="text" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>
