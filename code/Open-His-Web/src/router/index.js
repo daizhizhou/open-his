@@ -372,7 +372,7 @@ export const lastRoute = [
     children: [
       {
         path: 'type/data/:dictId(\\d+)',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/open-his/system/dict/data'),
         name: '/dict',
         meta: { title: '数据字典' }
       }

@@ -50,7 +50,12 @@ const actions = {
         routeArr.push(...lastRoute)
         commit('SET_ROUTES', routeArr)
         console.log(routeArr)
-        resolve(pushRouter)
+
+        // 只返回了异步路由
+        // resolve(pushRouter)
+
+        // 直接返回全部的路由
+        resolve(routeArr)
       })
     })
   }

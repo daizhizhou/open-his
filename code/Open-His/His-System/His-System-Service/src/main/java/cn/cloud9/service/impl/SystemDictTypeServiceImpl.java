@@ -1,8 +1,10 @@
 package cn.cloud9.service.impl;
 
 import cn.cloud9.contants.ApiConstant;
+import cn.cloud9.domain.SystemDictData;
 import cn.cloud9.domain.SystemDictType;
 import cn.cloud9.domain.SystemMenu;
+import cn.cloud9.mapper.SystemDictDataMapper;
 import cn.cloud9.mapper.SystemDictTypeMapper;
 import cn.cloud9.service.SystemDictTypeService;
 import cn.cloud9.utils.CheckUtil;
@@ -10,12 +12,16 @@ import cn.cloud9.vo.DataGridViewVO;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +30,11 @@ public class SystemDictTypeServiceImpl
         extends ServiceImpl<SystemDictTypeMapper, SystemDictType>
         implements SystemDictTypeService{
 
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    private SystemDictDataMapper systemDictDataMapper;
 
     @Override
     public DataGridViewVO listPage(SystemDictType dictTypeDto) {
@@ -94,5 +104,22 @@ public class SystemDictTypeServiceImpl
     @Override
     public SystemDictType selectDictTypeById(Long dictId) {
         return this.baseMapper.selectById(dictId);
+    }
+
+    @Override
+    public void dictCacheAsync() {
+        //查询所有可用的dictType
+        final List<SystemDictType> dictTypes = this.baseMapper.selectList(
+            new LambdaQueryWrapper<SystemDictType>().eq(SystemDictType::getStatus, ApiConstant.STATUS_TRUE));
+
+        final ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        dictTypes.forEach(dictType -> {
+            List<SystemDictData> dictData = systemDictDataMapper.selectList(
+                new LambdaQueryWrapper<SystemDictData>()
+                .eq(SystemDictData::getStatus, ApiConstant.STATUS_TRUE)
+                .eq(SystemDictData::getDictType, dictType.getDictType())
+            );
+            valueOperations.set(ApiConstant.DICT_REDIS_PREFIX + dictType.getDictType(), JSON.toJSONString(dictData));
+        });
     }
 }

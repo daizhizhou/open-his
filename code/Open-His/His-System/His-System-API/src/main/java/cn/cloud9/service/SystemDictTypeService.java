@@ -53,4 +53,6 @@ public interface SystemDictTypeService extends IService<SystemDictType>{
      */
     SystemDictType selectDictTypeById(Long dictId);
 
+    void dictCacheAsync();
+
 }
