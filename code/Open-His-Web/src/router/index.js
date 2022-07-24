@@ -67,7 +67,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'dept',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/open-his/system/department/index'),
         name: '/system/dept',
         meta: {
           title: '科室管理',
