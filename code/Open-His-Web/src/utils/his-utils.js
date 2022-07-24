@@ -10,9 +10,9 @@ export function addDateRange(params, dateRange) {
   var search = params
   search.beginTime = ''
   search.endTime = ''
-  if (dateRange != null && dateRange !== '' && dateRange !== undefined) {
-    search.beginTime = this.dateRange[0]
-    search.endTime = this.dateRange[1]
+  if (!!dateRange && !!dateRange[0] && !!dateRange[1]) {
+    search.beginTime = this.dateRange[0] + ' 00:00:00'
+    search.endTime = this.dateRange[1] + ' 23:59:59'
   }
   return search
 }
