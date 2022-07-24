@@ -53,16 +53,16 @@ public class SystemDepartmentServiceImpl
 
     @Override
     public int addDept(SystemDepartment deptDto) {
+        deptDto.setCreateBy(deptDto.getSimpleUser().getUserName());
+        deptDto.setCreateTime(DateUtil.date());
         return this.baseMapper.insert(deptDto);
     }
 
     @Override
     public int updateDept(SystemDepartment deptDto) {
-        SystemDepartment dept = new SystemDepartment();
-        BeanUtil.copyProperties(deptDto,dept);
         //设置创建者，。创建时间
-        dept.setCreateBy(deptDto.getSimpleUser().getUserName());
-        dept.setCreateTime(DateUtil.date());
+        deptDto.setUpdateBy(deptDto.getSimpleUser().getUserName());
+        deptDto.setUpdateTime(DateUtil.date());
         return this.baseMapper.updateById(deptDto);
     }
 

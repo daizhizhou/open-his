@@ -79,19 +79,16 @@ public class SystemDictTypeServiceImpl
 
     @Override
     public int insert(SystemDictType dictTypeDto) {
-        SystemDictType dictType = new SystemDictType();
-        BeanUtil.copyProperties(dictTypeDto, dictType);
-        dictType.setCreateTime(DateUtil.date());
-        dictType.setCreateBy(dictTypeDto.getSimpleUser().getUserName());
-        return this.baseMapper.insert(dictType);
+        dictTypeDto.setCreateTime(DateUtil.date());
+        dictTypeDto.setCreateBy(dictTypeDto.getSimpleUser().getUserName());
+        return this.baseMapper.insert(dictTypeDto);
     }
 
     @Override
     public int update(SystemDictType dictTypeDto) {
-        SystemDictType dictType = new SystemDictType();
-        BeanUtil.copyProperties(dictTypeDto, dictType);
-        dictType.setUpdateBy(dictTypeDto.getSimpleUser().getUserName());
-        return this.baseMapper.updateById(dictType);
+        dictTypeDto.setUpdateBy(dictTypeDto.getSimpleUser().getUserName());
+        dictTypeDto.setUpdateTime(DateUtil.date());
+        return this.baseMapper.updateById(dictTypeDto);
     }
 
     @Override

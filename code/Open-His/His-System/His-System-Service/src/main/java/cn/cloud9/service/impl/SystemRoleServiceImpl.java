@@ -1,6 +1,7 @@
 package cn.cloud9.service.impl;
 
 import cn.cloud9.contants.ApiConstant;
+import cn.cloud9.utils.CheckUtil;
 import cn.cloud9.vo.DataGridViewVO;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -86,4 +87,21 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleMapper, SystemR
         this.baseMapper.deleteRoleMenuByRoleIds(Collections.singletonList(roleId));
         Arrays.asList(menuIds).forEach(menuId -> baseMapper.saveRoleMenu(roleId,menuId));
     }
+
+    @Override
+    public List<Long> getRoleIdsByUserId(Long userId) {
+        return CheckUtil.isEmpty(userId) ?
+            Collections.EMPTY_LIST : this.baseMapper.selectRoleIdsByUserId(userId);
+    }
+
+    @Override
+    public void saveRoleUser(Long userId, Long[] roleIds) {
+        //根据用户ID先删除sys_role_menu里面原来的数据
+        this.baseMapper.deleteRoleUserByUserIds(Collections.singletonList(userId));
+        for (Long roleId : roleIds) {
+            this.baseMapper.saveRoleUser(userId,roleId);
+        }
+    }
+
+
 }

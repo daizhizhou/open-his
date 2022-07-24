@@ -5,6 +5,7 @@ import cn.cloud9.utils.AppMd5Util;
 import cn.cloud9.utils.CheckUtil;
 import cn.cloud9.vo.DataGridViewVO;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,7 +14,10 @@ import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.cloud9.mapper.SystemUserMapper;
 import cn.cloud9.domain.SystemUser;
@@ -53,29 +57,27 @@ public class SystemUserServiceImpl
 
     @Override
     public int addUser(SystemUser userDto) {
-        SystemUser user = new SystemUser();
-        BeanUtil.copyProperties(userDto,user);
-        user.setUserType(ApiConstant.USER_NORMAL);
-        String defaultPwd = user.getPhone().substring(5);
-        user.setCreateBy(userDto.getSimpleUser().getUserName());
-        user.setCreateTime(DateUtil.date());
-        user.setSalt(AppMd5Util.createSalt());
-        user.setPassword(AppMd5Util.md5(defaultPwd,user.getSalt(),2));
-        return this.baseMapper.insert(user);
+        userDto.setUserType(ApiConstant.USER_NORMAL);
+        String defaultPwd = userDto.getPhone().substring(5);
+        userDto.setCreateBy(userDto.getSimpleUser().getUserName());
+        userDto.setCreateTime(DateUtil.date());
+        userDto.setSalt(AppMd5Util.createSalt());
+        userDto.setPassword(AppMd5Util.md5(defaultPwd, userDto.getSalt(),2));
+        return this.baseMapper.insert(userDto);
     }
 
     @Override
     public int updateUser(SystemUser userDto) {
         SystemUser user = this.baseMapper.selectById(userDto.getUserId());
         if (CheckUtil.isEmpty(user)) return 0;
-        BeanUtil.copyProperties(userDto,user);
         user.setUpdateBy(userDto.getSimpleUser().getUserName());
+        user.setUpdateTime(DateUtil.date());
         return this.baseMapper.updateById(user);
     }
 
     @Override
     public int deleteUserByIds(Long[] userIds) {
-        return 0;
+        return this.baseMapper.deleteBatchIds(Arrays.asList(userIds));
     }
 
     @Override

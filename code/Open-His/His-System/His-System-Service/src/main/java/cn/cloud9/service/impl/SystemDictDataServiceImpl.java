@@ -46,22 +46,18 @@ public class SystemDictDataServiceImpl
 
     @Override
     public int insert(SystemDictData dictDataDto) {
-        SystemDictData dictData = new SystemDictData();
-        BeanUtil.copyProperties(dictDataDto,dictData);
         //设置创建者，创建时间
-        dictData.setCreateBy(dictDataDto.getSimpleUser().getUserName());
-        dictData.setCreateTime(DateUtil.date());
-        return this.baseMapper.insert(dictData);
+        dictDataDto.setCreateBy(dictDataDto.getSimpleUser().getUserName());
+        dictDataDto.setCreateTime(DateUtil.date());
+        return this.baseMapper.insert(dictDataDto);
     }
 
     @Override
     public int update(SystemDictData dictDataDto) {
-        SystemDictData dictData = new SystemDictData();
-        BeanUtil.copyProperties(dictDataDto , dictData);
         // 设置修改人, 更新时间
-        dictData.setUpdateBy(dictDataDto.getSimpleUser().getUserName());
-        dictData.setUpdateTime(DateUtil.date());
-        return this.baseMapper.updateById(dictData);
+        dictDataDto.setUpdateBy(dictDataDto.getSimpleUser().getUserName());
+        dictDataDto.setUpdateTime(DateUtil.date());
+        return this.baseMapper.updateById(dictDataDto);
     }
 
     @Override

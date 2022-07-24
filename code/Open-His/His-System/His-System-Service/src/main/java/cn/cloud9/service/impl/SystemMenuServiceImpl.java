@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -55,27 +56,24 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuMapper, SystemM
 
     @Override
     public int addMenu(SystemMenu menuDto) {
-        SystemMenu menu = new SystemMenu();
-        BeanUtil.copyProperties(menuDto, menu);
         //设置创建时间创建人
-        menu.setCreateBy(menuDto.getSimpleUser().getUserName());
-        menu.setCreateTime(DateUtil.date());
-        return this.baseMapper.insert(menu);
+        menuDto.setCreateBy(menuDto.getSimpleUser().getUserName());
+        menuDto.setCreateTime(DateUtil.date());
+        return this.baseMapper.insert(menuDto);
     }
 
     @Override
     public int updateMenu(SystemMenu menuDto) {
-        SystemMenu menu = new SystemMenu();
-        BeanUtil.copyProperties(menuDto, menu);
         //设置修改人
-        menu.setUpdateBy(menuDto.getSimpleUser().getUserName());
-        return this.baseMapper.updateById(menu);
+        menuDto.setUpdateBy(menuDto.getSimpleUser().getUserName());
+        menuDto.setUpdateTime(DateUtil.date());
+        return this.baseMapper.updateById(menuDto);
     }
 
     @Override
     public int deleteMenuById(Long menuId) {
         //先删除role_menu的中间表的数据【后面再加】
-        this.systemRoleMapper.deleteRoleMenuByMenuIds(Arrays.asList(menuId));
+        this.systemRoleMapper.deleteRoleMenuByMenuIds(Collections.singletonList(menuId));
         //再删除菜单或权限
         return this.baseMapper.deleteById(menuId);
     }

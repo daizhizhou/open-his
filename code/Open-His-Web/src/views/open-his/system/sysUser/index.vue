@@ -87,6 +87,10 @@
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleResetPwd">重置密码</el-button>
       </el-col>
+
+      <el-col :span="1.5">
+        <el-button type="success" icon="el-icon-thumb" size="mini" :disabled="single" @click="handleSelectRole">分配角色</el-button>
+      </el-col>
     </el-row>
     <!-- 表格工具按钮结束 -->
 
@@ -296,12 +300,42 @@
     </el-dialog>
     <!-- 添加修改弹出层结束 -->
 
+    <!-- 分配角色的弹出层开始 -->
+    <el-dialog
+      :title="title"
+      :visible.sync="selectRoleOpen"
+      width="900px"
+      center
+      append-to-body
+    >
+      <el-table
+        ref="roleListTable"
+        v-loading="loading"
+        border
+        :data="roleTableList"
+        @selection-change="handleRoleTableSelectionChange"
+      >
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="角色ID" align="center" prop="roleId" />
+        <el-table-column label="角色名称" align="center" prop="roleName" />
+        <el-table-column label="权限编码" align="center" prop="roleCode" />
+        <el-table-column label="备注" align="center" prop="remark" />
+        <el-table-column label="创建时间" align="center" prop="createTime" />
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="handleSaveRoleUserSubmit">确 定</el-button>
+        <el-button @click="cancelRoleUser">取 消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 分配角色的弹出层结束 -->
+
   </div>
 </template>
 <script>
 // 引入api
 import { selectAllDept } from '@/api/system/department'
 import { listUserForPage, addUser, updateUser, getUserById, deleteUserByIds, resetPwd } from '@/api/system/sysUser'
+import { selectAllRole, getRoleIdsByUserId, saveRoleUser } from '@/api/system/role'
 export default {
   // 定义页面数据
   data() {
@@ -355,7 +389,15 @@ export default {
         userNumber: [
           { required: true, message: '科室编码不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      // 是否显示分配权限的弹出层
+      selectRoleOpen: false,
+      // roleIds 分配角色列表选择状态
+      roleIds: [],
+      // 角色数据
+      roleTableList: [],
+      // 当前选中的用户
+      currentUserId: undefined
     }
   },
   // 勾子
@@ -565,6 +607,44 @@ export default {
         })
       }).catch(function() {
         tx.msgError('重置已取消')
+      })
+    },
+    // 打开分配角色的弹出层
+    handleSelectRole(row) {
+      this.selectRoleOpen = true
+      this.title = '分配角色'
+      this.currentUserId = row.userId || this.ids[0]
+      const tx = this
+      selectAllRole().then(res => {
+        tx.roleTableList = res.data
+        this.$nextTick(() => {
+          // 根据当前用户查找之前拥有的角色IDS
+          getRoleIdsByUserId(tx.currentUserId).then(res2 => {
+            res2.data.filter(r1 => {
+              tx.roleTableList.filter(r2 => {
+                if (r1 === r2.roleId) {
+                  // 选中表格checkbox
+                  tx.$refs.roleListTable.toggleRowSelection(r2, true)
+                }
+              })
+            })
+          })
+        })
+      })
+    },
+    cancelRoleUser() {
+      this.selectRoleOpen = false
+    },
+    // 数据表格的多选择框选择时触发
+    handleRoleTableSelectionChange(selection) {
+      this.roleIds = selection.map(item => item.roleId)
+    },
+    // 保存用户和角色之间的关系
+    handleSaveRoleUserSubmit() {
+      saveRoleUser(this.currentUserId, this.roleIds).then(res => {
+        this.msgSuccess('分配成功')
+      }).catch(function() {
+        this.msgError('分配失败')
       })
     }
   }

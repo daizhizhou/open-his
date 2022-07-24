@@ -41,4 +41,20 @@ public interface SystemRoleMapper extends BaseMapper<SystemRole> {
      * 根据菜单权限ID删除sys_role_menu
      */
     void deleteRoleMenuByMenuIds(@Param("ids") List<Long> ids);
+
+    /**
+     * 根据用户ID查询用户拥有的角色IDS
+     *
+     * @param userId
+     * @return
+     */
+    List<Long> selectRoleIdsByUserId(@Param("userId") Long userId);
+
+    /**
+     * 保存角色和用户的关系
+     *
+     * @param userId
+     * @param roleId
+     */
+    void saveRoleUser(@Param("userId") Long userId, @Param("roleId") Long roleId);
 }
