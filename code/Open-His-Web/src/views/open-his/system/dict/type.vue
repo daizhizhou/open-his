@@ -47,8 +47,8 @@
           value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="-"
-          start-placeholde="开始日期"
-          end-placeholde="结束日期"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         />
       </el-form-item>
       <el-form-item>
