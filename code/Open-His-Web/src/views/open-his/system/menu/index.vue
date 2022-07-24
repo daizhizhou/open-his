@@ -2,6 +2,8 @@
   <div class="app-container">
     <!-- 查询条件开始 -->
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form-item label="每页数量" prop="pageSize" />
+      <el-form-item label="当前页码" prop="pageNum" />
       <el-form-item label="菜单名称" prop="menuName">
         <el-input
           v-model="queryParams.menuName"

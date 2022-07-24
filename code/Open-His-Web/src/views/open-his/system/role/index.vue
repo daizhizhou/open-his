@@ -4,26 +4,19 @@
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
       <el-form-item label="每页数量" prop="pageSize" />
       <el-form-item label="当前页码" prop="pageNum" />
-      <el-form-item label="字典类型" prop="dictType">
-        <el-select
-          v-model="queryParams.dictType"
-          placeholder="请选择字典类型"
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input
+          v-model="queryParams.roleName"
+          placeholder="请输入角色名称"
           clearable
           size="small"
           style="width:240px"
-        >
-          <el-option
-            v-for="dict in typeOptions"
-            :key="dict.dictType"
-            :label="dict.dictName"
-            :value="dict.dictType"
-          />
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="字典标签" prop="dictLabel">
+      <el-form-item label="权限字符" prop="roleCode">
         <el-input
-          v-model="queryParams.dictLabel"
-          placeholder="请输入字典标签"
+          v-model="queryParams.roleCode"
+          placeholder="请输入权限字符"
           clearable
           size="small"
           style="width:240px"
@@ -32,7 +25,7 @@
       <el-form-item label="状态" prop="status">
         <el-select
           v-model="queryParams.status"
-          placeholder="字典状态"
+          placeholder="可用状态"
           clearable
           size="small"
           style="width:240px"
@@ -45,6 +38,18 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="创建时间">
+        <el-date-picker
+          v-model="dateRange"
+          size="small"
+          style="width:240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -52,7 +57,7 @@
     </el-form>
     <!-- 查询条件结束 -->
 
-    <!-- 表头按钮开始 -->
+    <!-- 表格工具按钮开始 -->
     <el-row :gutter="10" style="margin-bottom: 8px;">
       <el-col :span="1.5">
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
@@ -63,30 +68,29 @@
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
       </el-col>
-
     </el-row>
-    <!-- 表头按钮结束 -->
+    <!-- 表格工具按钮结束 -->
 
     <!-- 数据表格开始 -->
-    <el-table v-loading="loading" border :data="dictDataTableList" @selection-change="handleSelectionChnage">
+    <el-table v-loading="loading" border :data="roleTableList" @selection-change="handleSelectionChnage">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="字典编码" prop="dictCode" align="center" />
-      <el-table-column label="字典标签" prop="dictLabel" align="center" />
-      <el-table-column label="字典键值" prop="dictValue" align="center" />
-      <el-table-column label="字典排序" prop="dictSort" align="center" />
+      <el-table-column label="角色ID" align="center" prop="roleId" />
+      <el-table-column label="角色名称" align="center" prop="roleName" />
+      <el-table-column label="权限编码" align="center" prop="roleCode" />
+      <el-table-column label="显示顺序" align="center" prop="roleSort" />
       <el-table-column label="状态" prop="status" align="center" :formatter="statusFormatter" />
-      <el-table-column label="备注" prop="remark" align="center" :show-overflow-tooltip="true" />
-      <el-table-column label="创建时间" prop="createTime" align="center" width="180" />
-      <el-table-column label="操作" align="center">
+      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="创建时间" align="center" prop="createTime" />
+      <el-table-column label="操作" align="center" width="280">
         <template slot-scope="scope">
           <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button type="text" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <!-- <el-button type="text" icon="el-icon-thumb" size="mini" @click="handleSelectMenu(scope.row)">分配权限</el-button> -->
         </template>
       </el-table-column>
     </el-table>
     <!-- 数据表格结束 -->
-
-    <!-- 分页组件开始 -->
+    <!-- 分页控件开始 -->
     <el-pagination
       v-show="total>0"
       :current-page="queryParams.pageNum"
@@ -97,9 +101,8 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <!-- 分页组件结束 -->
-
-    <!-- 添加和修改的弹出层开始 -->
+    <!-- 分页控件结束 -->
+    <!-- 添加修改弹出层开始 -->
     <el-dialog
       :title="title"
       :visible.sync="open"
@@ -108,17 +111,14 @@
       append-to-body
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="字典类型" prop="dictType">
-          <el-input v-model="form.dictType" :disabled="true" size="small" />
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="form.roleName" placeholder="请输入角色名称" clearable size="small" />
         </el-form-item>
-        <el-form-item label="数据标签" prop="dictLabel">
-          <el-input v-model="form.dictLabel" placeholder="请输入数据标签" clearable size="small" />
+        <el-form-item label="权限编码" prop="roleCode">
+          <el-input v-model="form.roleCode" placeholder="请输入权限字符" clearable size="small" />
         </el-form-item>
-        <el-form-item label="数据键值" prop="dictValue">
-          <el-input v-model="form.dictValue" placeholder="请输入数据键值" clearable size="small" />
-        </el-form-item>
-        <el-form-item label="排序显示" prop="dictSort">
-          <el-input-number v-model="form.dictSort" placeholder="请输入数据键值" clearable size="small" :min="0" />
+        <el-form-item label="显示顺序" prop="roleSort">
+          <el-input-number v-model="form.roleSort" clearable size="small" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -139,17 +139,18 @@
         <el-button @click="cancel">取 消</el-button>
       </span>
     </el-dialog>
-    <!-- 添加和修改的弹出层结束 -->
+    <!-- 添加修改弹出层结束 -->
 
   </div>
 </template>
 <script>
-import { listForPage, addDictData, updateDictData, getDictDataById, deleteDictDataByIds } from '@/api/system/dict/data'
-import { getDictTypeById, selectAllDictType } from '@/api/system/dict/type'
+// 引入api
+import { listRoleForPage, addRole, updateRole, getRoleById, deleteRoleByIds } from '@/api/system/role'
 export default {
+  // 定义页面数据
   data() {
     return {
-      // 遮罩层
+      // 是否启用遮罩层
       loading: false,
       // 选中数组
       ids: [],
@@ -157,83 +158,72 @@ export default {
       single: true,
       // 非多个禁用
       multiple: true,
-      // 总条数
+      // 分页数据总条数
       total: 0,
-      // 字典数据表格数据
-      dictDataTableList: [],
+      // 字典表格数据
+      roleTableList: [],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
       open: false,
       // 状态数据字典
       statusOptions: [],
-      // 类型数据字典
-      typeOptions: [],
-      // 默认查询的类型
-      defaultDictType: undefined,
+      // 日期范围
+      dateRange: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        dictLabel: undefined,
-        dictType: undefined,
+        roleName: undefined,
+        roleCode: undefined,
         status: undefined
       },
       // 表单数据
       form: {},
       // 表单校验
       rules: {
-        dictLabel: [
-          { required: true, message: '数据标签不能为空', trigger: 'blur' }
+        roleName: [
+          { required: true, message: '角色名称不能为空', trigger: 'blur' }
         ],
-        dictValue: [
-          { required: true, message: '数据键值不能为空', trigger: 'blur' }
+        roleCode: [
+          { required: true, message: '权限编码不能为空', trigger: 'blur' }
         ]
       }
     }
   },
+  // 勾子
   created() {
     // 使用全局的根据字典类型查询字典数据的方法查询字典数据
     this.getDataByType('sys_normal_disable').then(res => {
       this.statusOptions = res.data
     })
-    // 取路由路径上的参数
-    const dictId = this.$route.params && this.$route.params.dictId // 路由传参
-    // 根据字典类型ID查询字典的dictType
-    getDictTypeById(dictId).then(res => {
-      // 给查询条件的下拉框给默认值
-      this.queryParams.dictType = res.data.dictType
-      this.defaultDictType = res.data.dictType
-      this.getDictDataList()// 做分页查询
-    })
-    // 不分页，查询所有的类型
-    selectAllDictType().then(res => {
-      this.typeOptions = res.data
-    })
+    // 查询表格数据
+    this.getRoleList()
   },
+  // 方法
   methods: {
-    // 查询字典数据
-    getDictDataList() {
-      this.loading = true
-      listForPage(this.queryParams).then(res => {
-        this.loading = false
-        this.dictDataTableList = res.data
+    // 查询表格数据
+    getRoleList() {
+      this.loading = true // 打开遮罩
+      listRoleForPage(this.addDateRange(this.queryParams, this.dateRange)).then(res => {
+        this.roleTableList = res.data
         this.total = res.total
+        this.loading = false// 关闭遮罩
       })
     },
     // 条件查询
     handleQuery() {
-      this.getDictDataList()
+      this.getRoleList()
     },
     // 重置查询条件
     resetQuery() {
       this.resetForm('queryForm')
-      this.queryParams.dictType = this.defaultDictType
-      this.getDictDataList()
+      this.dateRange = []
+      this.getRoleList()
     },
     // 数据表格的多选择框选择时触发
     handleSelectionChnage(selection) {
-      this.ids = selection.map(item => item.dictCode)
+      this.ids = selection.map(item => item.roleId)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -241,60 +231,51 @@ export default {
     handleSizeChange(val) {
       this.queryParams.pageSize = val
       // 重新查询
-      this.getDictDataList()
+      this.getRoleList()
     },
     // 点击上一页  下一页，跳转到哪一页面时触发
     handleCurrentChange(val) {
       this.queryParams.pageNum = val
       // 重新查询
-      this.getDictDataList()
+      this.getRoleList()
     },
     // 翻译状态
     statusFormatter(row) {
       return this.selectDictLabel(this.statusOptions, row.status)
     },
-    // 重置表单
-    reset() {
-      this.form = {
-        dictCode: undefined,
-        dictLable: undefined,
-        dictValue: undefined,
-        dictType: undefined,
-        status: '0',
-        dictSort: 0,
-        remark: undefined
-      }
-      this.resetForm('form')
-    },
     // 打开添加的弹出层
     handleAdd() {
       this.open = true
       this.reset()
-      this.form.dictType = this.defaultDictType
+      this.title = '添加角色信息'
     },
     // 打开修改的弹出层
     handleUpdate(row) {
+      this.title = '修改角色信息'
+      const roleId = row.roleId || this.ids
+      // const dictId = row.dictId === undefined ? this.ids[0] : row.dictId
       this.open = true
       this.reset()
-      const dictCode = row.dictCode || this.ids
-      // 根据字典数据ID查询字典数据
-      getDictDataById(dictCode).then(res => {
+      // 根据dictId查询一个字典信息
+      this.loading = true
+      getRoleById(roleId).then(res => {
         this.form = res.data
+        this.loading = false
       })
     },
-    // 进行删除
+    // 执行删除
     handleDelete(row) {
-      const dictCodes = row.dictCode || this.ids
-      this.$confirm('此操作将永久删除该字典数据, 是否继续?', '提示', {
+      const roleIds = row.roleId || this.ids
+      this.$confirm('此操作将永久删除该角色数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.loading = true
-        deleteDictDataByIds(dictCodes).then(res => {
+        deleteRoleByIds(roleIds).then(res => {
           this.loading = false
           this.msgSuccess('删除成功')
-          this.getDictDataList()// 全查询
+          this.getRoleList()// 全查询
         })
       }).catch(() => {
         this.msgError('删除已取消')
@@ -307,20 +288,20 @@ export default {
         if (valid) {
           // 做添加
           this.loading = true
-          if (this.form.dictCode === undefined) {
-            addDictData(this.form).then(res => {
+          if (this.form.roleId === undefined) {
+            addRole(this.form).then(res => {
               this.msgSuccess('保存成功')
               this.loading = false
-              this.getDictDataList()// 列表重新查询
+              this.getRoleList()// 列表重新查询
               this.open = false// 关闭弹出层
             }).catch(() => {
               this.loading = false
             })
           } else { // 做修改
-            updateDictData(this.form).then(res => {
+            updateRole(this.form).then(res => {
               this.msgSuccess('修改成功')
               this.loading = false
-              this.getDictDataList()// 列表重新查询
+              this.getRoleList()// 列表重新查询
               this.open = false// 关闭弹出层
             }).catch(() => {
               this.loading = false
@@ -332,6 +313,19 @@ export default {
     // 取消
     cancel() {
       this.open = false
+      this.title = ''
+    },
+    // 重置表单
+    reset() {
+      this.resetForm('form')
+      this.form = {
+        roleId: undefined,
+        roleName: undefined,
+        roleCode: undefined,
+        roleSort: 0,
+        remark: undefined,
+        status: '0'
+      }
     }
   }
 }
