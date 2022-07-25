@@ -29,7 +29,7 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:mapper/*/*Mapper.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
   global-config:
     db-config:
       id-type: auto
@@ -37,6 +37,8 @@ mybatis-plus:
 dubbo:
   application:
     name: his-erp-service
+  consumer:
+    check: false
   config-center:
     timeout: 10000
   metadata-report:
@@ -45,7 +47,7 @@ dubbo:
     address: zookeeper://${cloud9.host}:2181
     timeout: 10000
   protocol:
-    port: -1   #随机端口
+    # port: -1   #随机端口
     name: dubbo
   scan:   #扫描的包
     base-packages: cn.cloud9.service.impl

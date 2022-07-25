@@ -107,20 +107,20 @@
             </exclusions>
         </dependency>
         <!--支付相关-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/alipay-sdk-java-1.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>alipay-trade-sdk-java</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/alipay-trade-sdk-1.0.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>alipay-sdk-java</artifactId>-->
+<!--            <version>1.0</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/lib/alipay-sdk-java-1.0.jar</systemPath>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>alipay-trade-sdk-java</artifactId>-->
+<!--            <version>1.0</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/lib/alipay-trade-sdk-1.0.jar</systemPath>-->
+<!--        </dependency>-->
         <!-- commons-configuration -->
         <dependency>
             <groupId>commons-configuration</groupId>
@@ -132,6 +132,14 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson-version}</version>
+        </dependency>
+
+
+        <!-- 接入His-ERP服务接口包 -->
+        <dependency>
+            <groupId>cn.cloud9</groupId>
+            <artifactId>His-ERP-API</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 

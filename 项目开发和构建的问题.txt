@@ -53,3 +53,15 @@ https://blog.csdn.net/liangcheng0523/article/details/106882135/
 1、注意SpringBoot yml配置是否能读取xml文件
 2、mapper引用正常？
 3、其他问题
+
+
+2022年07月25日
+1、ERP服务构建失败，发现依赖引用循环了，另外解除循环依然发生失败
+直接删除本地仓库信息，重新构建成功
+https://blog.csdn.net/qq_38668544/article/details/120531532?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-120531532-blog-93197037.pc_relevant_multi_platform_whitelistv1&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-120531532-blog-93197037.pc_relevant_multi_platform_whitelistv1&utm_relevant_index=1
+
+2、注意Dubbo提供者服务
+接口的实现类，@Service使用Dubbo提供的
+另外实现类Bean也需要被Spring管理，改用@Component注解
+
+

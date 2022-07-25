@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>cn.cloud9</groupId>
-            <artifactId>His-ERP-Service</artifactId>
+            <artifactId>His-ERP-API</artifactId>
             <version>1.0</version>
         </dependency>
         <!--mysql-->
