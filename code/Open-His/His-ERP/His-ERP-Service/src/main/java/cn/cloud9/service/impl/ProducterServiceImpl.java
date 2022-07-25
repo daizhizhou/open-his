@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.cloud9.domain.Producter;
 import cn.cloud9.mapper.ProducterMapper;
 import cn.cloud9.service.ProducterService;
+import org.apache.dubbo.config.annotation.Method;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,13 @@ import org.springframework.stereotype.Component;
  * 是Dubbo的服务注册Bean，同样Spring也需要管理，换@Component注册
  */
 @Component
-@Service
+@Service(methods = {
+        // Dubbo默认服务调用提供者未响应时，重试2次调用，这会产生消息非幂等问题
+        // （问题发生在新增数据时，原本只是插入一条，如果发送非正常操作，触发Dubbo重试操作，则发生重复插入）
+        // 查询是幂等的。同参数每次查询结果一样， 按ID删除和更新，调用结果也是幂等的
+        // 只针对这个方法进行处理，设置dubbo重试次数为0
+        @Method(name = "addProducter", retries = 0)
+})
 public class ProducterServiceImpl extends ServiceImpl<ProducterMapper, Producter> implements ProducterService {
 
     @Override
