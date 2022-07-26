@@ -2,6 +2,8 @@ package cn.cloud9.controller.erp;
 
 import cn.cloud9.aspect.annotation.SystemLog;
 import cn.cloud9.aspect.enums.BusinessType;
+import cn.cloud9.config.spring.BaseController;
+import cn.cloud9.config.spring.HystrixSupport;
 import cn.cloud9.domain.Producter;
 import cn.cloud9.service.ProducterService;
 import cn.cloud9.util.ShiroSecurityUtil;
@@ -14,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import static cn.cloud9.controller.erp.ProducterController.FALL_BACK_METHOD;
 
 /**
  * @author OnCloud9
@@ -22,20 +23,17 @@ import static cn.cloud9.controller.erp.ProducterController.FALL_BACK_METHOD;
  * @project Open-His
  * @date 2022年07月25日 下午 09:49
  */
-@DefaultProperties(defaultFallback = FALL_BACK_METHOD)
+
 @RestController
 @RequestMapping("erp/producter")
-public class ProducterController {
-    public static final String FALL_BACK_METHOD = "serviceUnavailableFallBack";
+public class ProducterController extends HystrixSupport {
+
     @Reference
     private ProducterService producterService;
 
-    /**
-     * dubbo服务提供者出现服务不可用或者异常，将调用该方法返回给此dubbo消费者
-     * @return
-     */
+    @Override
     public AjaxResult serviceUnavailableFallBack() {
-        return AjaxResult.toAjax(-1);
+        return AjaxResult.fail("自定义失败信息");
     }
 
     /**
