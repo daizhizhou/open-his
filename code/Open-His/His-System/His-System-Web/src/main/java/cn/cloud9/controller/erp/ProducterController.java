@@ -7,12 +7,14 @@ import cn.cloud9.service.ProducterService;
 import cn.cloud9.util.ShiroSecurityUtil;
 import cn.cloud9.vo.AjaxResult;
 import cn.cloud9.vo.DataGridViewVO;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import static cn.cloud9.controller.erp.ProducterController.FALL_BACK_METHOD;
 
 /**
  * @author OnCloud9
@@ -20,16 +22,26 @@ import javax.validation.constraints.NotNull;
  * @project Open-His
  * @date 2022年07月25日 下午 09:49
  */
+@DefaultProperties(defaultFallback = FALL_BACK_METHOD)
 @RestController
 @RequestMapping("erp/producter")
 public class ProducterController {
-
+    public static final String FALL_BACK_METHOD = "serviceUnavailableFallBack";
     @Reference
     private ProducterService producterService;
 
     /**
+     * dubbo服务提供者出现服务不可用或者异常，将调用该方法返回给此dubbo消费者
+     * @return
+     */
+    public AjaxResult serviceUnavailableFallBack() {
+        return AjaxResult.toAjax(-1);
+    }
+
+    /**
      * 分页查询
      */
+    @HystrixCommand
     @GetMapping("listProducterForPage")
     public AjaxResult listProducterForPage(Producter producterDto) {
         DataGridViewVO gridView = this.producterService.listProducterPage(producterDto);
@@ -39,6 +51,7 @@ public class ProducterController {
     /**
      * 添加
      */
+    @HystrixCommand
     @PostMapping("addProducter")
     @SystemLog(title = "添加生产厂家", businessType = BusinessType.INSERT)
     public AjaxResult addProducter(@Validated Producter producterDto) {
@@ -49,6 +62,7 @@ public class ProducterController {
     /**
      * 修改
      */
+    @HystrixCommand
     @PutMapping("updateProducter")
     @SystemLog(title = "修改生产厂家", businessType = BusinessType.UPDATE)
     public AjaxResult updateProducter(@Validated Producter producterDto) {
@@ -60,6 +74,7 @@ public class ProducterController {
     /**
      * 根据ID查询一个生产厂家信息
      */
+    @HystrixCommand
     @GetMapping("getProducterById/{producterId}")
     public AjaxResult getProducterById(@PathVariable @Validated @NotNull(message = "生产厂家ID不能为空") Long producterId) {
         return AjaxResult.success(this.producterService.getOne(producterId));
@@ -68,6 +83,7 @@ public class ProducterController {
     /**
      * 删除
      */
+    @HystrixCommand
     @DeleteMapping("deleteProducterByIds/{producterIds}")
     @SystemLog(title = "删除生产厂家", businessType = BusinessType.DELETE)
     public AjaxResult deleteProducterByIds(@PathVariable @Validated @NotEmpty(message = "要删除的ID不能为空") Long[] producterIds) {
@@ -77,6 +93,7 @@ public class ProducterController {
     /**
      * 查询所有可用的生产厂家
      */
+    @HystrixCommand
     @GetMapping("selectAllProducter")
     public AjaxResult selectAllProducter() {
         return AjaxResult.success(this.producterService.selectAllProducter());
