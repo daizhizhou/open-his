@@ -3,6 +3,7 @@ package cn.cloud9.utils;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
 /**
  * @author OnCloud9
  * @description
@@ -13,6 +14,7 @@ public class IpUtil {
 
     /**
      * 获取ip地址
+     *
      * @param request
      * @return
      */
@@ -43,6 +45,7 @@ public class IpUtil {
 
     /**
      * 判断是否为内网IP
+     *
      * @param ip
      * @return
      */

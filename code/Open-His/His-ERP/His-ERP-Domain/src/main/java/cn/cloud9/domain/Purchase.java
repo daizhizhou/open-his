@@ -27,6 +27,7 @@ public class Purchase extends BaseDTO {
     /**
      * 制单号ID 全局ID雪花算法
      */
+    @NotBlank(message = "制单号ID不能为空")
     @TableId(value = "purchase_id", type = IdType.INPUT)
     @ApiModelProperty(value="制单号ID 全局ID雪花算法")
     private String purchaseId;

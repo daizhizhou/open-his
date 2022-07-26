@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.math.BigDecimal;
 import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,18 +20,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
-    * 药品信息表
-    */
-@ApiModel(value="药品信息表")
+ * 药品信息表
+ */
+@ApiModel(value = "药品信息表")
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "stock_medicines")
 public class Medicines extends BaseDTO {
     private static final long serialVersionUID = -4258299363717364355L;
     @TableId(value = "medicines_id", type = IdType.INPUT)
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     private Long medicinesId;
 
     /**
@@ -37,7 +39,7 @@ public class Medicines extends BaseDTO {
      */
     @NotBlank(message = "药品编号不能为空")
     @TableField(value = "medicines_number")
-    @ApiModelProperty(value="药品编号")
+    @ApiModelProperty(value = "药品编号")
     private String medicinesNumber;
 
     /**
@@ -45,7 +47,7 @@ public class Medicines extends BaseDTO {
      */
     @NotBlank(message = "药品名称不能为空")
     @TableField(value = "medicines_name")
-    @ApiModelProperty(value="药品名称")
+    @ApiModelProperty(value = "药品名称")
     private String medicinesName;
 
     /**
@@ -53,7 +55,7 @@ public class Medicines extends BaseDTO {
      */
     @NotBlank(message = "药品分类不能为空")
     @TableField(value = "medicines_type")
-    @ApiModelProperty(value="药品分类 sys_dict_data表his_medicines_type")
+    @ApiModelProperty(value = "药品分类 sys_dict_data表his_medicines_type")
     private String medicinesType;
 
     /**
@@ -61,7 +63,7 @@ public class Medicines extends BaseDTO {
      */
     @NotBlank(message = "处方类型不能为空")
     @TableField(value = "prescription_type")
-    @ApiModelProperty(value="处方类型 sys_dict_data表his_prescription_type")
+    @ApiModelProperty(value = "处方类型 sys_dict_data表his_prescription_type")
     private String prescriptionType;
 
     /**
@@ -69,21 +71,21 @@ public class Medicines extends BaseDTO {
      */
     @NotNull(message = "处方价格不能为空")
     @TableField(value = "prescription_price")
-    @ApiModelProperty(value="处方价格")
+    @ApiModelProperty(value = "处方价格")
     private BigDecimal prescriptionPrice;
 
     /**
      * 单位（g/条）
      */
     @TableField(value = "unit")
-    @ApiModelProperty(value="单位（g/条）")
+    @ApiModelProperty(value = "单位（g/条）")
     private String unit;
 
     /**
      * 换算量
      */
     @TableField(value = "`conversion`")
-    @ApiModelProperty(value="换算量")
+    @ApiModelProperty(value = "换算量")
     private Integer conversion;
 
     /**
@@ -91,7 +93,7 @@ public class Medicines extends BaseDTO {
      */
     @NotBlank(message = "关键字不能为空")
     @TableField(value = "keywords")
-    @ApiModelProperty(value="关键字")
+    @ApiModelProperty(value = "关键字")
     private String keywords;
 
     /**
@@ -99,7 +101,7 @@ public class Medicines extends BaseDTO {
      */
     @NotBlank(message = "生产厂家不能为空")
     @TableField(value = "producter_id")
-    @ApiModelProperty(value="生产厂家ID")
+    @ApiModelProperty(value = "生产厂家ID")
     private String producterId;
 
     /**
@@ -107,7 +109,7 @@ public class Medicines extends BaseDTO {
      */
     @NotBlank(message = "药品状态0不能为空")
     @TableField(value = "`status`")
-    @ApiModelProperty(value="药品状态0正常0停用 sys_dict_data表 sys_normal_disable")
+    @ApiModelProperty(value = "药品状态0正常0停用 sys_dict_data表 sys_normal_disable")
     private String status;
 
     /**
@@ -115,7 +117,7 @@ public class Medicines extends BaseDTO {
      */
     @NotNull(message = "库存量不能为空")
     @TableField(value = "medicines_stock_num")
-    @ApiModelProperty(value="库存量")
+    @ApiModelProperty(value = "库存量")
     private Long medicinesStockNum;
 
     /**
@@ -123,35 +125,35 @@ public class Medicines extends BaseDTO {
      */
     @NotNull(message = "库存量不能为空")
     @TableField(value = "medicines_stock_danger_num")
-    @ApiModelProperty(value="预警值")
+    @ApiModelProperty(value = "预警值")
     private Long medicinesStockDangerNum;
 
     /**
      * 创建时间
      */
     @TableField(value = "create_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updateTime;
 
     /**
      * 创建者
      */
     @TableField(value = "create_by")
-    @ApiModelProperty(value="创建者")
+    @ApiModelProperty(value = "创建者")
     private String createBy;
 
     /**
      * 更新者
      */
     @TableField(value = "update_by")
-    @ApiModelProperty(value="更新者")
+    @ApiModelProperty(value = "更新者")
     private String updateBy;
 
     public static final String COL_MEDICINES_ID = "medicines_id";

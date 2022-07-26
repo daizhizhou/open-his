@@ -51,3 +51,48 @@ export function getPurchaseItemById(purchaseId) {
     method: 'get'
   })
 }
+
+// 添加采购单和详情
+export function addPurchase(data) {
+  return request({
+    url: '/erp/purchase/addPurchase/',
+    method: 'post',
+    data: data
+  })
+}
+// 添加采购单和详情并提交审核
+export function addPurchaseToAudit(data) {
+  return request({
+    url: '/erp/purchase/addPurchaseToAudit/',
+    method: 'post',
+    data: data
+  })
+}
+// 根据采购单ID查询采购单信息和详情
+export function queryPurchaseAndItemByPurchaseId(purchaseId) {
+  return request({
+    url: '/erp/purchase/queryPurchaseAndItemByPurchaseId/' + purchaseId,
+    method: 'get'
+  })
+}
+// 入库
+export function doInventory(purchaseId) {
+  return request({
+    url: '/erp/purchase/doInventory/' + purchaseId,
+    method: 'post'
+  })
+}
+// 得到单据ID
+export function getPurchaseId() {
+  return request({
+    url: '/erp/purchase/getPurchaseId',
+    method: 'get'
+  })
+}
+// 生成单据号
+export function generatePurchaseId() {
+  return request({
+    url: '/erp/purchase/generatePurchaseId',
+    method: 'get'
+  })
+}

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
-public interface ProviderService extends IService<Provider>{
+public interface ProviderService extends IService<Provider> {
     /**
      * 分页查询
      *

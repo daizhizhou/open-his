@@ -53,7 +53,7 @@
     <!-- 表格工具按钮开始 -->
     <el-row :gutter="10" style="margin-bottom: 8px;">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini">新增采购</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleToNewPurchase">新增采购</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoAudit">提交审核</el-button>
@@ -70,7 +70,13 @@
     <!-- 数据表格开始 -->
     <el-table v-loading="loading" border :data="purchaseTableList" @selection-change="handleSelectionChnage">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="单据ID" align="center" width="200" prop="purchaseId" />
+      <el-table-column label="单据ID" align="center" width="200" prop="purchaseId">
+        <template slot-scope="scope">
+          <router-link class="link-type" :to="`/erp/purchase/editPurchase/${scope.row.purchaseId}`">
+            <span>{{ scope.row.purchaseId }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="供应商" width="180" align="center" prop="providerId" :formatter="providerFormatter" />
       <el-table-column label="采购批发总额" align="center" prop="purchaseTradeTotalAmount" />
       <el-table-column label="状态" prop="status" align="center" :formatter="statusFormatter" />
@@ -103,7 +109,7 @@
 </template>
 <script>
 // 引入api
-import { listPurchaseForPage, doAudit, doInvalid } from '@/api/erp/purchase'
+import { listPurchaseForPage, doAudit, doInvalid, doInventory } from '@/api/erp/purchase'
 import { selectAllProvider } from '@/api/erp/provider'
 export default {
   // 定义页面数据
@@ -239,10 +245,31 @@ export default {
         tx.msgError('作废已取消')
       })
     },
+    // 跳转到新增采购的路由页面
+    handleToNewPurchase() {
+      this.$router.replace('/erp/purchase/newPurchase')
+    },
+
     // 执行入库
     handleDoInventory(row) {
+      const purchaseId = this.ids[0]
+      const tx = this
+      tx.$confirm('是否确认提交入库单据ID为:' + purchaseId + '的数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        doInventory(purchaseId).then(res => {
+          tx.msgSuccess('入库成功')
+          tx.getPurchaseList()// 全查询
+        }).catch(() => {
+          tx.msgError('入库失败')
+        })
+      }).catch(() => {
+        tx.msgError('入库已取消')
+      })
     }
-
   }
+
 }
 </script>

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
-public interface MedicinesService extends IService<Medicines>{
+public interface MedicinesService extends IService<Medicines> {
     /**
      * 分页查询
      *
@@ -55,6 +55,6 @@ public interface MedicinesService extends IService<Medicines>{
     /**
      * 调整库存
      */
-    int updateMedicinesStorage(Long medicinesId,Long medicinesStockNum);
+    int updateMedicinesStorage(Long medicinesId, Long medicinesStockNum);
 
 }

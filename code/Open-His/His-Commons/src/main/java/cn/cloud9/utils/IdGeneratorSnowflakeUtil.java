@@ -5,6 +5,7 @@ import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.IdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * @author OnCloud9
  * @description
@@ -19,9 +20,9 @@ public class IdGeneratorSnowflakeUtil {
 
     static {
         try {
-            workId = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr());
-            log.info("当前机器的工作ID为:" + workId);
-            snowflake=IdUtil.createSnowflake(workId, datacenterId);
+//            workId = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr());
+//            log.info("当前机器的工作ID为:" + workId);
+            snowflake = IdUtil.createSnowflake(workId, datacenterId);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("当前机器的workId获取失败", e);

@@ -379,20 +379,20 @@ export const lastRoute = [
     ]
   },
   {
-    path: '/stock/purchase',
+    path: '/erp/purchase',
     component: Layout,
     hidden: true,
     children: [
       {
-        path: 'insert',
-        component: () => import('@/views/error-page/404'),
-        name: '/stock/purchase/insert',
+        path: 'newPurchase',
+        component: () => import('@/views/open-his/erp/purchase/newPurchase'),
+        name: '/erp/purchase/newPurchase',
         meta: { title: '采购入库', icon: 'list' }
       },
       {
-        path: 'update/:purchaseId',
-        component: () => import('@/views/error-page/404'),
-        name: '/stock/purchase/update',
+        path: 'editPurchase/:purchaseId',
+        component: () => import('@/views/open-his/erp/purchase/editPurchase'),
+        name: '/erp/purchase/editPurchase',
         meta: { title: '采购入库修改', icon: 'list' }
       }
     ]
