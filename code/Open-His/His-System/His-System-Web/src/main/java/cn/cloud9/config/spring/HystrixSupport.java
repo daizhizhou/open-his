@@ -13,5 +13,4 @@ public abstract class HystrixSupport extends BaseController {
     protected AjaxResult serviceUnavailableFallBack() {
         return AjaxResult.toAjax(-1);
     }
-
 }
