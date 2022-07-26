@@ -20,26 +20,27 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.cloud9.domain.Provider;
 import cn.cloud9.mapper.ProviderMapper;
 import cn.cloud9.service.ProviderService;
+
 @Component
-@Service(methods = {@Method(name = "addProvider",retries = 0)})
-public class ProviderServiceImpl extends ServiceImpl<ProviderMapper, Provider> implements ProviderService{
+@Service(methods = {@Method(name = "addProvider", retries = 0)})
+public class ProviderServiceImpl extends ServiceImpl<ProviderMapper, Provider> implements ProviderService {
 
     @Override
     public DataGridViewVO listProviderPage(Provider providerDto) {
-        Page<Provider> page=new Page<>(providerDto.getPageNum(),providerDto.getPageSize());
-        QueryWrapper<Provider> qw=new QueryWrapper<>();
-        qw.like(StringUtils.isNotBlank(providerDto.getProviderName()),Provider.COL_PROVIDER_NAME,providerDto.getProviderName());
-        qw.like(StringUtils.isNotBlank(providerDto.getContactName()),Provider.COL_CONTACT_NAME,providerDto.getContactName());
+        Page<Provider> page = new Page<>(providerDto.getPageNum(), providerDto.getPageSize());
+        QueryWrapper<Provider> qw = new QueryWrapper<>();
+        qw.like(StringUtils.isNotBlank(providerDto.getProviderName()), Provider.COL_PROVIDER_NAME, providerDto.getProviderName());
+        qw.like(StringUtils.isNotBlank(providerDto.getContactName()), Provider.COL_CONTACT_NAME, providerDto.getContactName());
         qw.and(StringUtils.isNotBlank(providerDto.getContactTel()), new Consumer<QueryWrapper<Provider>>() {
             @Override //(tel like ? or mobile like ?)
             public void accept(QueryWrapper<Provider> providerQueryWrapper) {
-                providerQueryWrapper.like(Provider.COL_CONTACT_TEL,providerDto.getContactTel())
-                        .or().like(Provider.COL_CONTACT_MOBILE,providerDto.getContactTel());
+                providerQueryWrapper.like(Provider.COL_CONTACT_TEL, providerDto.getContactTel())
+                        .or().like(Provider.COL_CONTACT_MOBILE, providerDto.getContactTel());
             }
         });
-        qw.eq(StringUtils.isNotBlank(providerDto.getStatus()),Provider.COL_STATUS,providerDto.getStatus());
-        this.baseMapper.selectPage(page,qw);
-        return new DataGridViewVO(page.getTotal(),page.getRecords());
+        qw.eq(StringUtils.isNotBlank(providerDto.getStatus()), Provider.COL_STATUS, providerDto.getStatus());
+        this.baseMapper.selectPage(page, qw);
+        return new DataGridViewVO(page.getTotal(), page.getRecords());
     }
 
     @Override
@@ -65,8 +66,8 @@ public class ProviderServiceImpl extends ServiceImpl<ProviderMapper, Provider> i
 
     @Override
     public int deleteProviderByIds(Long[] providerIds) {
-        List<Long> ids= Arrays.asList(providerIds);
-        if(ids.size()>0){
+        List<Long> ids = Arrays.asList(providerIds);
+        if (ids.size() > 0) {
             return this.baseMapper.deleteBatchIds(ids);
         }
         return 0;
@@ -74,7 +75,7 @@ public class ProviderServiceImpl extends ServiceImpl<ProviderMapper, Provider> i
 
     @Override
     public List<Provider> selectAllProvider() {
-        QueryWrapper<Provider> qw=new QueryWrapper<>();
+        QueryWrapper<Provider> qw = new QueryWrapper<>();
         qw.eq(Provider.COL_STATUS, ApiConstant.STATUS_TRUE);
         return this.baseMapper.selectList(qw);
     }

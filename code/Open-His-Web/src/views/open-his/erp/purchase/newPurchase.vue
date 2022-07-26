@@ -136,7 +136,8 @@
     >
       <!-- 查询条件开始 -->
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-
+        <el-form-item v-show="false" label="每页数量" prop="pageSize" />
+        <el-form-item v-show="false" label="当前页码" prop="pageNum" />
         <el-form-item label="关键字" prop="keywords">
           <el-input
             v-model="queryParams.keywords"
