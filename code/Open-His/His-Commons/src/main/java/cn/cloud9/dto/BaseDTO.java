@@ -23,7 +23,8 @@ import java.util.Date;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class BaseDTO implements Serializable {
+public class
+BaseDTO implements Serializable {
     private static final long serialVersionUID = -5168171386253550854L;
 
     /**
@@ -47,18 +48,18 @@ public class BaseDTO implements Serializable {
     /**
      * 开始时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @TableField(exist = false)
-    private Date beginDate;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @TableField(exist = false)
+//    private Date beginDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(exist = false)
     private Date beginTime;
     /**
      * 结束时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @TableField(exist = false)
-    private Date endDate;
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @TableField(exist = false)
+//    private Date endDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(exist = false)
     private Date endTime;

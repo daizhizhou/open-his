@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
@@ -22,16 +23,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.cloud9.mapper.SystemUserMapper;
 import cn.cloud9.domain.SystemUser;
 import cn.cloud9.service.SystemUserService;
+
 @Service
 public class SystemUserServiceImpl
-    extends ServiceImpl<SystemUserMapper, SystemUser>
-    implements SystemUserService {
+        extends ServiceImpl<SystemUserMapper, SystemUser>
+        implements SystemUserService {
 
 
     @Override
     public SystemUser queryUserByPhone(String phone) {
         return this.baseMapper.selectOne(
-            new LambdaQueryWrapper<SystemUser>().eq(SystemUser::getPhone, phone)
+                new LambdaQueryWrapper<SystemUser>().eq(SystemUser::getPhone, phone)
         );
     }
 
@@ -51,7 +53,7 @@ public class SystemUserServiceImpl
         qw.ge(!CheckUtil.isEmpty(userDto.getBeginTime()), SystemUser.COL_CREATE_TIME, userDto.getBeginTime());
         qw.le(!CheckUtil.isEmpty(userDto.getEndTime()), SystemUser.COL_CREATE_TIME, userDto.getEndTime());
         qw.orderByAsc(SystemUser.COL_USER_ID);
-        this.baseMapper.selectPage(page,qw);
+        this.baseMapper.selectPage(page, qw);
         return new DataGridViewVO(page.getTotal(), page.getRecords());
     }
 
@@ -62,7 +64,7 @@ public class SystemUserServiceImpl
         userDto.setCreateBy(userDto.getSimpleUser().getUserName());
         userDto.setCreateTime(DateUtil.date());
         userDto.setSalt(AppMd5Util.createSalt());
-        userDto.setPassword(AppMd5Util.md5(defaultPwd, userDto.getSalt(),2));
+        userDto.setPassword(AppMd5Util.md5(defaultPwd, userDto.getSalt(), 2));
         return this.baseMapper.insert(userDto);
     }
 
@@ -82,7 +84,7 @@ public class SystemUserServiceImpl
 
     @Override
     public List<SystemUser> getAllUsers() {
-        QueryWrapper<SystemUser> qw=new QueryWrapper<>();
+        QueryWrapper<SystemUser> qw = new QueryWrapper<>();
         qw.eq(SystemUser.COL_STATUS, ApiConstant.STATUS_TRUE);
         qw.eq(SystemUser.COL_USER_TYPE, ApiConstant.USER_NORMAL);
         qw.orderByAsc(SystemUser.COL_USER_ID);
@@ -94,10 +96,19 @@ public class SystemUserServiceImpl
         for (Long userId : userIds) {
             SystemUser user = this.baseMapper.selectById(userId);
             String defaultPwd = user.getUserType().equals(ApiConstant.USER_ADMIN) ?
-                "123456" : user.getPhone().substring(5);
+                    "123456" : user.getPhone().substring(5);
             user.setSalt(AppMd5Util.createSalt());
-            user.setPassword(AppMd5Util.md5(defaultPwd,user.getSalt(),2));
+            user.setPassword(AppMd5Util.md5(defaultPwd, user.getSalt(), 2));
             this.baseMapper.updateById(user);
         }
+    }
+
+    @Override
+    public List<SystemUser> querySchedulingUsers(Long userId, Long deptId) {
+        QueryWrapper<SystemUser> qw = new QueryWrapper<>();
+        qw.eq(null != deptId, SystemUser.COL_DEPT_ID, deptId);
+        qw.eq(null != userId, SystemUser.COL_USER_ID, userId);
+        qw.eq(SystemUser.COL_SCHEDULING_FLAG, ApiConstant.SCHEDULING_FLAG_TRUE);
+        return this.baseMapper.selectList(qw);
     }
 }

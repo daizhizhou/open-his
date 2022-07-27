@@ -62,4 +62,12 @@ public interface SystemUserService extends IService<SystemUser>{
      */
     void resetPassWord(Long[] userIds);
 
+    /**
+     * 根据部门ID和用户ID查询用户信息，如果用户ID和部门ID为空，那么就查询所有需要班的医生信息
+     * @param userId
+     * @param deptId
+     * @return
+     */
+    List<SystemUser> querySchedulingUsers(Long userId, Long deptId);
+
 }

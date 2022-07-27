@@ -47,7 +47,7 @@ dubbo:
     address: zookeeper://${cloud9.host}:2181
     timeout: 10000
   protocol:
-    # port: -1   #随机端口
+    port: -1   #随机端口
     name: dubbo
   scan:   #扫描的包
     base-packages: cn.cloud9.service.impl

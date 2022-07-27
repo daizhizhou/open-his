@@ -142,6 +142,13 @@
             <version>1.0</version>
         </dependency>
 
+        <!--依赖doctor-api-->
+        <dependency>
+            <groupId>cn.cloud9</groupId>
+            <artifactId>His-Doctor-API</artifactId>
+            <version>1.0</version>
+        </dependency>
+
 
         <!-- 集成服务熔断组件 -->
         <dependency>
