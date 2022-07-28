@@ -48,18 +48,12 @@ BaseDTO implements Serializable {
     /**
      * 开始时间
      */
-//    @DateTimeFormat(pattern = "yyyy-MM-dd")
-//    @TableField(exist = false)
-//    private Date beginDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(exist = false)
     private Date beginTime;
     /**
      * 结束时间
      */
-//    @DateTimeFormat(pattern = "yyyy-MM-dd")
-//    @TableField(exist = false)
-//    private Date endDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(exist = false)
     private Date endTime;

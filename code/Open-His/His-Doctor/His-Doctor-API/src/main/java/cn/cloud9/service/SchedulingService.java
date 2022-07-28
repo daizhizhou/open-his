@@ -23,4 +23,14 @@ public interface SchedulingService extends IService<Scheduling> {
      * @return
      */
     int saveScheduling(SchedulingForm schedulingFormDto);
+
+    /**
+     * 查询有排班的部门信息
+     * @param deptId
+     * @param schedulingDay
+     * @param schedulingType
+     * @param subsectionType
+     * @return
+     */
+    List<Long> queryHasSchedulingDeptIds(Long deptId, String schedulingDay, String schedulingType, String subsectionType);
 }

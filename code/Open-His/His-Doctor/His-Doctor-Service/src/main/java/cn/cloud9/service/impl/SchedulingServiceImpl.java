@@ -134,4 +134,9 @@ public class SchedulingServiceImpl extends ServiceImpl<SchedulingMapper, Schedul
         }
         return list;
     }
+
+    @Override
+    public List<Long> queryHasSchedulingDeptIds(Long deptId, String schedulingDay, String schedulingType, String subsectionType) {
+        return this.baseMapper.queryHasSchedulingDeptIds(deptId,schedulingDay,schedulingType,subsectionType);
+    }
 }

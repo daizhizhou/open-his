@@ -21,7 +21,14 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 
 // - - - - - start - - - - -
-import { resetForm, addDateRange, selectDictLabel, handleTree, getAge } from '@/utils/his-utils'
+import {
+  resetForm,
+  addDateRange,
+  selectDictLabel,
+  handleTree,
+  getAge,
+  getCurrentTimeType
+} from '@/utils/his-utils'
 import { getDataByType } from '@/api/system/dict/data'
 
 // 全局方法挂载
@@ -31,6 +38,7 @@ Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.getDataByType = getDataByType // 加载全局的根据字典类型查询字典的方法[基本每个页面都要使用]
 Vue.prototype.getAge = getAge
+Vue.prototype.getCurrentTimeType = getCurrentTimeType
 
 // 挂载全局消息框
 Vue.prototype.msgSuccess = function(msg) {

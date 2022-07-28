@@ -26,4 +26,17 @@ public interface PatientService extends IService<Patient>{
      * @return
      */
     PatientFile getPatientFileById(String patientId);
+
+    /**
+     * 根据身份证号查询患者信息
+     * @param idCard
+     * @return
+     */
+    Patient getPatientByIdCard(String idCard);
+
+    /**
+     * 保存患者信息
+     * @param patientDto
+     */
+    Patient addPatient(Patient patientDto);
 }

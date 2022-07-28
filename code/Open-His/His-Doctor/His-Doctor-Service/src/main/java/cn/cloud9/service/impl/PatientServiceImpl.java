@@ -1,11 +1,14 @@
 package cn.cloud9.service.impl;
 
+import cn.cloud9.contants.ApiConstant;
 import cn.cloud9.domain.Patient;
 import cn.cloud9.domain.PatientFile;
 import cn.cloud9.mapper.PatientFileMapper;
 import cn.cloud9.mapper.PatientMapper;
 import cn.cloud9.service.PatientService;
+import cn.cloud9.utils.AppMd5Util;
 import cn.cloud9.vo.DataGridViewVO;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -46,5 +49,22 @@ public class PatientServiceImpl
         QueryWrapper<PatientFile> qw = new QueryWrapper<>();
         qw.eq(PatientFile.COL_PATIENT_ID, patientId);
         return this.patientFileMapper.selectOne(qw);
+    }
+
+    @Override
+    public Patient getPatientByIdCard(String idCard) {
+        QueryWrapper<Patient> qw=new QueryWrapper<>();
+        qw.eq(Patient.COL_ID_CARD,idCard);
+        return this.baseMapper.selectOne(qw);
+    }
+
+    @Override
+    public Patient addPatient(Patient patientDto) {
+        patientDto.setCreateTime(DateUtil.date());
+        patientDto.setIsFinal(ApiConstant.IS_FINAL_FALSE);
+        String defaultPwd=patientDto.getPhone().substring(5);
+        patientDto.setPassword(AppMd5Util.md5(defaultPwd,patientDto.getPhone(),2));
+        this.baseMapper.insert(patientDto);
+        return patientDto;
     }
 }
