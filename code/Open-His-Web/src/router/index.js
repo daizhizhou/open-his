@@ -357,7 +357,7 @@ export const asyncRoutes = [
       },
       {
         path: 'patient',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/open-his/doctor/patient/index'),
         name: '/doctor/patient',
         meta: { title: '患者库', icon: 'list' }
       }
