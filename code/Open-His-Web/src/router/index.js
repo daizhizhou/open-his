@@ -76,7 +76,7 @@ export const asyncRoutes = [
       },
       {
         path: 'user',
-        component: () => import('@/views/open-his/system/sysUser/index'),
+        component: () => import('@/views/open-his/system/sys-user/index'),
         name: '/system/user',
         meta: {
           title: '用户管理',
@@ -333,7 +333,7 @@ export const asyncRoutes = [
       },
       {
         path: 'registeredlist',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/open-his/doctor/registration/list'),
         name: '/doctor/registeredlist',
         meta: { title: '挂号列表', icon: 'list' }
       },

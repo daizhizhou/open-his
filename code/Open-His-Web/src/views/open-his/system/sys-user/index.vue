@@ -334,7 +334,7 @@
 <script>
 // 引入api
 import { selectAllDept } from '@/api/system/department'
-import { listUserForPage, addUser, updateUser, getUserById, deleteUserByIds, resetPwd } from '@/api/system/sysUser'
+import { listUserForPage, addUser, updateUser, getUserById, deleteUserByIds, resetPwd } from '@/api/system/sys-user'
 import { selectAllRole, getRoleIdsByUserId, saveRoleUser } from '@/api/system/role'
 export default {
   // 定义页面数据
