@@ -19,6 +19,7 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
+import moment from 'moment'
 
 // - - - - - start - - - - -
 import {
@@ -39,6 +40,7 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.getDataByType = getDataByType // 加载全局的根据字典类型查询字典的方法[基本每个页面都要使用]
 Vue.prototype.getAge = getAge
 Vue.prototype.getCurrentTimeType = getCurrentTimeType
+Vue.prototype.moment = moment
 
 // 挂载全局消息框
 Vue.prototype.msgSuccess = function(msg) {
