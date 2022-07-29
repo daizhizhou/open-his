@@ -176,11 +176,11 @@ public class RegistrationController {
             return AjaxResult.fail("当前挂号单【"+regId+"】对应的挂号单不存在，请核对后再查询");
         }
         //如果挂号单的状态不是未收费
-        if(!registration.getRegStatus().equals(Constants.REG_STATUS_1)){
+        if(!registration.getRegStatus().equals(ApiConstant.REG_STATUS_1)){
             return AjaxResult.fail("当前挂号单【"+regId+"】的状态不是待就诊状态，不能退号");
         }
         //收费，更新挂号单的状态
-        registration.setRegStatus(Constants.REG_STATUS_4);
+        registration.setRegStatus(ApiConstant.REG_STATUS_4);
         return AjaxResult.toAjax(this.registrationService.updateRegistrationByRegId(registration));
     }
 }

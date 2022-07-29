@@ -32,4 +32,6 @@ public interface RegistrationService extends IService<Registration>{
      */
     Registration queryRegistrationByRegId(String registrationId);
 
+    int updateRegistrationByRegId(Registration registration);
+
 }

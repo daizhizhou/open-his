@@ -53,4 +53,9 @@ public class RegistrationServiceImpl
     public Registration queryRegistrationByRegId(String registrationId) {
         return this.baseMapper.selectById(registrationId);
     }
+
+    @Override
+    public int updateRegistrationByRegId(Registration registration) {
+        return  this.baseMapper.updateById(registration);
+    }
 }
