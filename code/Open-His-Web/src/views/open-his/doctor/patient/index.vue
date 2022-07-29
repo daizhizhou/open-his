@@ -174,6 +174,80 @@
       </span>
     </el-dialog>
     <!-- 查看患者档案弹出层结束 -->
+
+    <!-- 病例信息弹出层开始 -->
+    <el-dialog
+      :title="title"
+      :visible.sync="careHistoryOpen"
+      width="1000px"
+      center
+      append-to-body
+    >
+      <el-form label-position="left" label-width="120px" inline class="demo-table-expand">
+        <el-card>
+          <el-form-item label="ID:">
+            <span v-text="patientObj.patientId" />
+          </el-form-item>
+          <el-form-item label="姓名:">
+            <span v-text="patientObj.name" />
+          </el-form-item>
+          <el-form-item label="身份证号:">
+            <span v-text="patientObj.idCard" />
+          </el-form-item>
+          <el-form-item label="电话:">
+            <span v-text="patientObj.phone" />
+          </el-form-item>
+        </el-card>
+      </el-form>
+      <el-card style="margin-top:3px">
+        <div v-if="allPatientMsg.length>0">
+          <el-collapse accordion>
+            <el-collapse-item
+              v-for="(item,index) in allPatientMsg"
+              :key="index"
+              :name="index"
+            >
+              <template slot="title">
+                科室:【{{ item.deptName }}】就诊时间:【{{ item.careDate }}】
+              </template>
+              <div>主诉:{{ item.caseTitle }}</div>
+              <div>诊断信息:{{ item.caseResult }}</div>
+              <div>医生建议:{{ item.doctorTips }}</div>
+              <div>备注:{{ item.remark }}</div>
+              <!--当前挂号单历史处方开始-->
+              <el-collapse v-show="item.careOrders.length>0" accordion>
+                <el-collapse-item v-for="(it,i) in item.careOrders" :key="i">
+                  <template slot="title">
+                    【 {{ it.coType==='0'?'药品处方':'检查处方' }}】【{{ i+1 }}】 <span>【处方总额】:￥{{ it.allAmount }}</span>
+                  </template>
+                  <el-table
+                    v-loading="loading"
+                    border
+                    :data="it.careOrderItems"
+                  >
+                    <el-table-column label="序号" align="center" type="index" width="50" />
+                    <el-table-column :label="it.coType==='0'?'药品名称':'项目名称'" align="center" prop="itemName" />
+                    <el-table-column label="数量" align="center" prop="num" />
+                    <el-table-column label="单价(元)" align="center" prop="price" />
+                    <el-table-column label="金额(元)" align="center" prop="amount" />
+                    <el-table-column label="备注" prop="remark" align="center" />
+                    <el-table-column label="状态" prop="status" align="center" :formatter="statusFormatter" />
+                  </el-table>
+                </el-collapse-item>
+              </el-collapse>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+        <div v-else style="text-align:center">
+          暂无就诊数据
+        </div>
+      </el-card>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelHistory">取 消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 病例信息弹出层结束 -->
   </div>
 </template>
 <script>
@@ -181,7 +255,8 @@
 import {
   listPatientForPage,
   getPatientById,
-  getPatientFileById
+  getPatientFileById,
+  getPatientAllMessageByPatientId
 } from '@/api/doctor/patient'
 export default {
   // 定义页面数据
@@ -218,7 +293,13 @@ export default {
       // 患者信息
       patientObj: {},
       // 档案信息
-      patientFileObj: {}
+      patientFileObj: {},
+      // 是否打开病历弹出层
+      careHistoryOpen: false,
+      // 患者所有就诊信息
+      allPatientMsg: [],
+      // 订单状态
+      statusOptions: []
     }
   },
   // 勾子
@@ -233,6 +314,10 @@ export default {
     })
     // 查询表格数据
     this.getPatientList()
+    //  加载处方详情支付状态
+    this.getDataByType('his_order_details_status').then(res => {
+      this.statusOptions = res.data
+    })
   },
   // 方法
   methods: {
@@ -315,7 +400,30 @@ export default {
     },
     // 查询患者就诊信息
     handleViewCareHistory(row) {
-
+      this.careHistoryOpen = true
+      const patientId = this.ids[0]
+      this.title = '查询患者病历信息'
+      this.patientFileObj = {}
+      this.patientObj = {}
+      // 查询患者
+      getPatientById(patientId).then(res => {
+        this.patientObj = res.data
+      })
+      // 查询病历
+      getPatientAllMessageByPatientId(patientId).then(res => {
+        this.loading = false
+        this.allPatientMsg = res.data
+      }).catch(() => {
+        this.msgError('查询失败')
+      })
+    },
+    // 取消按钮
+    cancelHistory() {
+      this.careHistoryOpen = false
+    },
+    // 翻译处方详情支付状态类型
+    statusFormatter(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.status)
     }
 
   }

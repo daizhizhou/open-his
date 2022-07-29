@@ -1,16 +1,23 @@
 package cn.cloud9.controller.doctor;
 
-import cn.cloud9.domain.Patient;
-import cn.cloud9.domain.PatientFile;
+import cn.cloud9.contants.ApiConstant;
+import cn.cloud9.domain.*;
+import cn.cloud9.service.CareService;
 import cn.cloud9.service.PatientService;
 import cn.cloud9.vo.AjaxResult;
 import cn.cloud9.vo.DataGridViewVO;
+import cn.hutool.core.bean.BeanUtil;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author OnCloud9
@@ -23,7 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PatientController {
     @Reference
     private PatientService patientService;
-
+    @Reference
+    private CareService careService;
     /**
      * 分页查询
      */
@@ -58,7 +66,25 @@ public class PatientController {
      * 根据患者ID查询患者信息 患者档案信息  历史病例
      */
     @GetMapping("getPatientAllMessageByPatientId/{patientId}")
-    public AjaxResult getPatientAllMessageByPatientId(@PathVariable String patientId) {
-        return AjaxResult.success();
+    public AjaxResult getPatientAllMessageByPatientId(@PathVariable String patientId){
+        //查询病历
+        List<CareHistory> careHistories=this.careService.queryCareHistoryByPatientId(patientId);
+        List<Map<String, Object>> res = new ArrayList<>();
+        for (CareHistory careHistory : careHistories) {
+            Map<String, Object> careHistoryMap = BeanUtil.beanToMap(careHistory);
+            careHistoryMap.put("careOrders", Collections.EMPTY_LIST);
+            List<Map<String, Object>> reCareOrders = new ArrayList<>();
+            //根据病历ID查询处方列表
+            List<CareOrder> careOrders = this.careService.queryCareOrdersByChId(careHistory.getChId());
+            for (CareOrder order : careOrders) {
+                Map<String, Object> careOrder = BeanUtil.beanToMap(order);
+                List<CareOrderItem> careOrderItems = this.careService.queryCareOrderItemsByCoId(order.getCoId());
+                careOrder.put("careOrderItems", careOrderItems);
+                reCareOrders.add(careOrder);
+            }
+            careHistoryMap.put("careOrders", reCareOrders);
+            res.add(careHistoryMap);
+        }
+        return AjaxResult.success(res);
     }
 }

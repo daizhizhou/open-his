@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Service
 public class RegistrationServiceImpl
@@ -30,18 +32,18 @@ public class RegistrationServiceImpl
 
     @Override
     public DataGridViewVO queryRegistrationForPage(Registration registrationDto) {
-        Page<Registration> page=new Page<>(registrationDto.getPageNum(),registrationDto.getPageSize());
-        QueryWrapper<Registration> qw=new QueryWrapper<>();
-        qw.eq(registrationDto.getDeptId()!=null,Registration.COL_DEPT_ID,registrationDto.getDeptId());
-        qw.eq(StringUtils.isNotBlank(registrationDto.getSchedulingType()),Registration.COL_SCHEDULING_TYPE,registrationDto.getSchedulingType());
-        qw.eq(StringUtils.isNotBlank(registrationDto.getSubsectionType()),Registration.COL_SUBSECTION_TYPE,registrationDto.getSubsectionType());
-        qw.eq(StringUtils.isNotBlank(registrationDto.getRegStatus()), Registration.COL_REG_STATUS,registrationDto.getRegStatus());
-        qw.eq(StringUtils.isNotBlank(registrationDto.getVisitDate()),Registration.COL_VISIT_DATE,registrationDto.getVisitDate());
-        qw.ge(registrationDto.getBeginTime()!=null,Registration.COL_VISIT_DATE,DateUtil.format(registrationDto.getBeginTime(),"yyyy-MM-dd"));
-        qw.le(registrationDto.getEndTime()!=null,Registration.COL_VISIT_DATE,DateUtil.format(registrationDto.getEndTime(),"yyyy-MM-dd"));
+        Page<Registration> page = new Page<>(registrationDto.getPageNum(), registrationDto.getPageSize());
+        QueryWrapper<Registration> qw = new QueryWrapper<>();
+        qw.eq(registrationDto.getDeptId() != null, Registration.COL_DEPT_ID, registrationDto.getDeptId());
+        qw.eq(StringUtils.isNotBlank(registrationDto.getSchedulingType()), Registration.COL_SCHEDULING_TYPE, registrationDto.getSchedulingType());
+        qw.eq(StringUtils.isNotBlank(registrationDto.getSubsectionType()), Registration.COL_SUBSECTION_TYPE, registrationDto.getSubsectionType());
+        qw.eq(StringUtils.isNotBlank(registrationDto.getRegStatus()), Registration.COL_REG_STATUS, registrationDto.getRegStatus());
+        qw.eq(StringUtils.isNotBlank(registrationDto.getVisitDate()), Registration.COL_VISIT_DATE, registrationDto.getVisitDate());
+        qw.ge(registrationDto.getBeginTime() != null, Registration.COL_VISIT_DATE, DateUtil.format(registrationDto.getBeginTime(), "yyyy-MM-dd"));
+        qw.le(registrationDto.getEndTime() != null, Registration.COL_VISIT_DATE, DateUtil.format(registrationDto.getEndTime(), "yyyy-MM-dd"));
         qw.orderByDesc(Registration.COL_CREATE_TIME);
-        this.baseMapper.selectPage(page,qw);
-        return new DataGridViewVO(page.getTotal(),page.getRecords());
+        this.baseMapper.selectPage(page, qw);
+        return new DataGridViewVO(page.getTotal(), page.getRecords());
     }
 
     @Override
@@ -56,6 +58,29 @@ public class RegistrationServiceImpl
 
     @Override
     public int updateRegistrationByRegId(Registration registration) {
-        return  this.baseMapper.updateById(registration);
+        return this.baseMapper.updateById(registration);
+    }
+
+    /**
+     * 根据条件查询挂号信息
+     *
+     * @param deptId         部门
+     * @param subsectionType 时段
+     * @param scheudlingType 类型  门诊 急诊
+     * @param regStatus      挂号单状态
+     * @param userId         医生ID
+     * @return
+     */
+    @Override
+    public List<Registration> queryRegistration(Long deptId, String subsectionType, String scheudlingType, String regStatus, Long userId) {
+        QueryWrapper<Registration> qw = new QueryWrapper<>();
+        qw.eq(Registration.COL_DEPT_ID, deptId);
+        qw.eq(StringUtils.isNotBlank(subsectionType), Registration.COL_SUBSECTION_TYPE, subsectionType);
+        qw.eq(Registration.COL_SCHEDULING_TYPE, scheudlingType);
+        qw.eq(Registration.COL_REG_STATUS, regStatus);
+        qw.eq(null != userId, Registration.COL_USER_ID, userId);
+        qw.eq(Registration.COL_VISIT_DATE, DateUtil.format(DateUtil.date(), "yyyy-MM-dd"));
+        qw.orderByAsc(Registration.COL_REG_NUMBER);
+        return this.baseMapper.selectList(qw);
     }
 }
