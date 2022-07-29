@@ -548,7 +548,7 @@
         />
         <el-form-item>
           <div style="text-align:center">
-            <el-button type="primary" icon="el-icon-check" size="mini" @click="hanldeAddCareItem">添加并关闭</el-button>
+            <el-button type="primary" icon="el-icon-check" size="mini" @click="handleAddCareItem">添加并关闭</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -604,7 +604,7 @@
         />
         <el-form-item>
           <div style="text-align:center">
-            <el-button type="primary" icon="el-icon-check" size="mini" @click="hanldeAddCareItem">添加并关闭</el-button>
+            <el-button type="primary" icon="el-icon-check" size="mini" @click="handleAddCareItem">添加并关闭</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -628,6 +628,7 @@ import {
   deleteCareOrderItemById,
   visitComplete
 } from '@/api/doctor/care'
+import { listCheckItemForPage } from '@/api/system/check-item'
 export default {
   data() {
     return {
@@ -686,7 +687,39 @@ export default {
       // 发病日期
       caseDateObj: new Date(),
       // 存放处方及详情数据
-      careOrders: []
+      careOrders: [],
+
+      // 弹出层的标题
+      title: '',
+      // 是否打开药品和检查项的添加的弹出层
+      openAddOrderItem: false,
+      // 是否打开药品列表的抽屉
+      openDrawerMedicines: false,
+      // 是否打开检查项目列表的抽屉
+      openDrawerCheckItem: false,
+
+      submitCareOrder: {
+        careOrder: {
+          allAmount: 0.00,
+          patientId: undefined,
+          patientName: undefined,
+          coType: '0' // 默认为药用处方
+        },
+        careOrderItems: []
+      },
+      queryItemFormParams: {
+        pageNum: 1,
+        pageSize: 10,
+        keywords: ''
+      },
+      // 药品或检查项目表格的数据
+      tableItemList: [],
+      // 抽屉里面数据的总条数
+      total: 0,
+      // 抽屉数据加载的遮罩
+      drawerLoading: false,
+      // 抽屉里面选中的数据
+      selectItemList: []
     }
   },
   created() {
@@ -716,6 +749,181 @@ export default {
     })
   },
   methods: {
+    // 打开添加检查处方的弹出层
+    handelAddCheckItemOrder() {
+      if (!this.careHistory.regId) {
+        this.msgError('请选择挂号患者')
+        return
+      }
+      if (!this.careHistory.chId) {
+        this.msgError('请先保存病历')
+        return
+      }
+      this.submitCareOrder.careOrder.coType = '1'
+      this.title = '添加【检查】处方'
+      this.openAddOrderItem = true
+      this.submitCareOrder.careOrderItems = []
+    },
+    // 打开添加药用处方的弹出层
+    handelAddMedicinesOrder() {
+      if (!this.careHistory.regId) {
+        this.msgError('请选择挂号患者')
+        return
+      }
+      if (!this.careHistory.chId) {
+        this.msgError('请先保存病历')
+        return
+      }
+      this.submitCareOrder.careOrder.coType = '0'
+      this.title = '添加【药用】处方'
+      this.openAddOrderItem = true
+      this.submitCareOrder.careOrderItems = []
+    },
+    // 打开药品或者检查项目的抽屉
+    handleOpenAddOrderItemDrawer() {
+      if (this.submitCareOrder.careOrder.coType === '0') {
+        // 打开药口列表抽屉
+        this.openDrawerMedicines = true
+        this.resetItemFormQuery()
+        this.getMedicinesList()
+      } else {
+        // 打开检查项目的抽屉
+        this.openDrawerCheckItem = true
+        this.resetItemFormQuery()
+        this.getCheckItemList()
+      }
+    },
+    // 点击上一页  下一页，跳转到哪一页面时触发
+    handleMedicinesCurrentChange(val) {
+      this.queryItemFormParams.pageNum = val
+      // 重新查询
+      this.getMedicinesList()
+    },
+    // 分页pageSize变化时触发
+    handleMedicinesSizeChange(val) {
+      this.queryItemFormParams.pageSize = val
+      // 重新查询
+      this.getMedicinesList()
+    },
+
+    // 数据表格的多选择框选择时触发
+    handleMedicinesSelectionChange(selection) {
+      this.selectItemList = selection
+    },
+    // 把弹出层的表格的数据加上index
+    tableRowClassName({ row, rowIndex }) {
+      row.index = rowIndex
+    },
+    // 搜索药品的方法
+    handleMedicinesFormQuery() {
+      this.queryItemFormParams.pageNum = 1
+      this.getMedicinesList()
+    },
+    // 加载药品数据
+    getCheckItemList() {
+      this.tableItemList = []
+      this.drawerLoading = true
+      listCheckItemForPage(this.queryItemFormParams).then(res => {
+        this.tableItemList = res.data
+        this.total = res.total
+        this.drawerLoading = false
+      }).catch(() => {
+        this.drawerLoading = false
+        this.msgError('查询检查项目失败')
+      })
+    },
+    // 搜索检查项目的方法
+    handleCheckItemFormQuery() {
+      this.queryItemFormParams.pageNum = 1
+      this.getCheckItemList()
+    },
+    // 重置抽屉的查询条件
+    resetItemFormQuery() {
+      this.queryItemFormParams = {
+        pageNum: 1,
+        pageSize: 10,
+        keywords: undefined
+      }
+      if (this.submitCareOrder.careOrder.coType === '0') {
+        this.getMedicinesList()
+      } else {
+        this.getCheckItemList()
+      }
+    },
+    // 数据表格的多选择框选择时触发
+    handleCheckItemSelectionChange(selection) {
+      this.selectItemList = selection
+    },
+    // 点击药品或检查项目抽屉页面的添加并关闭按钮
+    handleAddCareItem() {
+      const coType = this.submitCareOrder.careOrder.coType
+      if (this.selectItemList.length === 0) {
+        this.msgError('请选择【' + (coType === '0' ? '药品' : '检查项目') + '】')
+        return
+      }
+      if (coType === '0') { // 药品
+        this.selectItemList.filter(item => {
+          const obj = {
+            itemRefId: item.medicinesId,
+            itemName: item.medicinesName,
+            itemType: coType,
+            num: 1,
+            price: item.prescriptionPrice,
+            amount: 1 * item.prescriptionPrice,
+            remark: '请按说明服用'
+          }
+          let flag = false// 默认里面没有加
+          this.submitCareOrder.careOrderItems.filter(i => {
+            if (i.itemRefId === obj.itemRefId) {
+              i.num = i.num + 1
+              flag = true// 说明之前加过
+            }
+          })
+          if (!flag) {
+            this.submitCareOrder.careOrderItems.push(obj)
+          }
+          this.openDrawerMedicines = false
+        })
+      } else { // 检查项目
+        this.selectItemList.filter(item => {
+          const obj = {
+            itemRefId: item.checkItemId,
+            itemName: item.checkItemName,
+            itemType: coType,
+            num: 1,
+            price: item.unitPrice,
+            amount: 1 * item.unitPrice,
+            remark: '按要求检查'
+          }
+          let flag = false// 默认里面没有加
+          this.submitCareOrder.careOrderItems.filter(i => {
+            if (i.itemRefId === obj.itemRefId) {
+              i.num = i.num + 1
+              flag = true// 说明之前加过
+            }
+          })
+          if (!flag) {
+            this.submitCareOrder.careOrderItems.push(obj)
+          }
+          this.openDrawerCheckItem = false
+        })
+      }
+      // 计算总价
+      this.computeOrderItemAllAmount()
+    },
+    // 点击上一页  下一页，跳转到哪一页面时触发
+    handleCheckItemCurrentChange(val) {
+      console.log(`change -> ${val}`)
+      this.queryItemFormParams.pageNum = val
+      // 重新查询
+      this.getCheckItemList()
+    },
+    handleCheckItemSizeChange(val) {
+      console.log(`size -> ${val}`)
+      this.queryItemFormParams.pageSize = val
+      // 重新查询
+      this.getCheckItemList()
+    },
     // 翻译处方详情状态
     orderDetailsStatusFormatter(row) {
       return this.selectDictLabel(this.orderDetailsStatusOptions, row.status)
