@@ -9,6 +9,8 @@
         <module>His-ERP</module>
         <module>His-Doctor</module>
         <module>His-Statistic</module>
+        <!-- 演示demo不要一起打入Jar包 -->
+        <!--<module>AliPay-Demo</module>-->
     </modules>
 
     <parent>
