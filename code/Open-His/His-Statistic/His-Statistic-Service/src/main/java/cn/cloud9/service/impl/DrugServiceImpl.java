@@ -6,7 +6,6 @@ import cn.cloud9.domain.DrugStat;
 import cn.cloud9.mapper.DrugMapper;
 import cn.cloud9.service.DrugService;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
