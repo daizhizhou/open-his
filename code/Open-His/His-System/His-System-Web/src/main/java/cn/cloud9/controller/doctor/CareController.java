@@ -3,6 +3,7 @@ package cn.cloud9.controller.doctor;
 import cn.cloud9.config.spring.HystrixSupport;
 import cn.cloud9.contants.ApiConstant;
 import cn.cloud9.domain.*;
+import cn.cloud9.domain.form.CareOrderForm;
 import cn.cloud9.service.CareService;
 import cn.cloud9.service.PatientService;
 import cn.cloud9.service.RegistrationService;
@@ -180,7 +181,7 @@ public class CareController extends HystrixSupport {
         for (CareOrder careOrder : careOrders) {
             Map<String, Object> map = new HashMap<>();
             map.put("careOrder", careOrder);
-            List<CareOrderItem> careOrderItems = this.careService.queryCareOrderItemsByCoId(careOrder.getCoId());
+            List<CareOrderItem> careOrderItems = this.careService.queryCareOrderItemsByCoId(careOrder.getCoId(), null);
             map.put("careOrderItems", careOrderItems);
             res.add(map);
         }

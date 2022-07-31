@@ -2,7 +2,7 @@ package cn.cloud9.service;
 
 import cn.cloud9.domain.CareHistory;
 import cn.cloud9.domain.CareOrder;
-import cn.cloud9.domain.CareOrderForm;
+import cn.cloud9.domain.form.CareOrderForm;
 import cn.cloud9.domain.CareOrderItem;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -49,7 +49,7 @@ public interface CareService extends IService<CareHistory> {
      * @param coId
      * @return
      */
-    List<CareOrderItem> queryCareOrderItemsByCoId(String coId);
+    List<CareOrderItem> queryCareOrderItemsByCoId(String coId, String status);
 
 
     /**
@@ -85,4 +85,10 @@ public interface CareService extends IService<CareHistory> {
      * @return
      */
     int visitComplete(String regId);
+
+    /**
+     * 发药
+     * @param itemIds
+     */
+    String doMedicine(List<String> itemIds);
 }

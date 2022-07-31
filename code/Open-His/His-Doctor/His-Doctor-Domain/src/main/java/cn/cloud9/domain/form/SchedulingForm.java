@@ -1,5 +1,6 @@
-package cn.cloud9.domain;
+package cn.cloud9.domain.form;
 
+import cn.cloud9.domain.SimpleUser;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.cloud9.mapper.SystemLoginInfoMapper">
-  <resultMap id="BaseResultMap" type="cn.cloud9.domain.SystemLoginInfo">
-    <!--@mbg.generated-->
-    <!--@Table sys_login_info-->
-    <id column="info_id" jdbcType="BIGINT" property="infoId" />
-    <result column="msg" jdbcType="VARCHAR" property="msg" />
-    <result column="login_type" jdbcType="CHAR" property="loginType" />
-    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
-    <result column="browser" jdbcType="VARCHAR" property="browser" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="login_account" jdbcType="VARCHAR" property="loginAccount" />
-    <result column="ip_addr" jdbcType="VARCHAR" property="ipAddr" />
-    <result column="login_location" jdbcType="VARCHAR" property="loginLocation" />
-    <result column="os" jdbcType="VARCHAR" property="os" />
-    <result column="login_status" jdbcType="CHAR" property="loginStatus" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    info_id, msg, login_type, login_time, browser, user_name, login_account, ip_addr, 
-    login_location, os, login_status
-  </sql>
+    <resultMap id="BaseResultMap" type="cn.cloud9.domain.SystemLoginInfo">
+        <!--@mbg.generated-->
+        <!--@Table sys_login_info-->
+        <id column="info_id" jdbcType="BIGINT" property="infoId"/>
+        <result column="msg" jdbcType="VARCHAR" property="msg"/>
+        <result column="login_type" jdbcType="CHAR" property="loginType"/>
+        <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
+        <result column="browser" jdbcType="VARCHAR" property="browser"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="login_account" jdbcType="VARCHAR" property="loginAccount"/>
+        <result column="ip_addr" jdbcType="VARCHAR" property="ipAddr"/>
+        <result column="login_location" jdbcType="VARCHAR" property="loginLocation"/>
+        <result column="os" jdbcType="VARCHAR" property="os"/>
+        <result column="login_status" jdbcType="CHAR" property="loginStatus"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        info_id,
+        msg,
+        login_type,
+        login_time,
+        browser,
+        user_name,
+        login_account,
+        ip_addr,
+        login_location,
+        os,
+        login_status
+    </sql>
 </mapper>

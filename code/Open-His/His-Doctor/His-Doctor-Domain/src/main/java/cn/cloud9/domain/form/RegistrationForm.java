@@ -1,5 +1,7 @@
-package cn.cloud9.domain;
+package cn.cloud9.domain.form;
 
+import cn.cloud9.domain.Patient;
+import cn.cloud9.domain.Registration;
 import cn.cloud9.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;

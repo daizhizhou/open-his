@@ -1,7 +1,7 @@
 package cn.cloud9.service.impl;
 
 import cn.cloud9.domain.Scheduling;
-import cn.cloud9.domain.SchedulingForm;
+import cn.cloud9.domain.form.SchedulingForm;
 import cn.cloud9.mapper.SchedulingMapper;
 import cn.cloud9.service.SchedulingService;
 import cn.cloud9.utils.CheckUtil;

@@ -25,7 +25,6 @@ public class TradeTest {
         System.out.println(pay);
     }
 
-
     @Test
     public void tradeRefund2() {
         String outTradeNo = "OD123124124123412312312";

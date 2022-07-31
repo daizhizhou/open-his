@@ -1,5 +1,8 @@
-package cn.cloud9.domain;
+package cn.cloud9.domain.form;
 
+import cn.cloud9.domain.BaseEntity;
+import cn.cloud9.domain.CareOrder;
+import cn.cloud9.domain.CareOrderItem;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

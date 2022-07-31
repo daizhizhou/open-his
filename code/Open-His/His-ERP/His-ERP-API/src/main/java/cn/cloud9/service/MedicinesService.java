@@ -57,4 +57,12 @@ public interface MedicinesService extends IService<Medicines> {
      */
     int updateMedicinesStorage(Long medicinesId, Long medicinesStockNum);
 
+    /**
+     * 扣减库存
+     *
+     * @param medicinesId 药品ID
+     * @param num         扣减的量
+     * @return
+     */
+    int deductionMedicinesStorage(Long medicinesId, Long num);
 }

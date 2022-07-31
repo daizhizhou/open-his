@@ -48,6 +48,7 @@ shiro:
     - /pay/callback*/**
     #    - /system/upload/*
     - /druid/**
+    - /pay/callback/**
   authc-urls:
     - /**
 #mybatisplus的配置

@@ -3,7 +3,7 @@ package cn.cloud9.controller.doctor;
 import cn.cloud9.contants.ApiConstant;
 import cn.cloud9.domain.Patient;
 import cn.cloud9.domain.Registration;
-import cn.cloud9.domain.RegistrationForm;
+import cn.cloud9.domain.form.RegistrationForm;
 import cn.cloud9.domain.SystemDepartment;
 import cn.cloud9.service.PatientService;
 import cn.cloud9.service.RegistrationService;
@@ -18,7 +18,6 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,7 +1,7 @@
 package cn.cloud9.service;
 
 import cn.cloud9.domain.Scheduling;
-import cn.cloud9.domain.SchedulingForm;
+import cn.cloud9.domain.form.SchedulingForm;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

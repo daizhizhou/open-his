@@ -1,23 +1,22 @@
 package cn.cloud9.service.impl;
 
 import cn.cloud9.contants.ApiConstant;
+import cn.cloud9.domain.Medicines;
+import cn.cloud9.mapper.MedicinesMapper;
+import cn.cloud9.service.MedicinesService;
 import cn.cloud9.vo.DataGridViewVO;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Method;
-
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.List;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.cloud9.mapper.MedicinesMapper;
-import cn.cloud9.domain.Medicines;
-import cn.cloud9.service.MedicinesService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @Service(methods = {@Method(name = "addMedicines", retries = 0)})
@@ -80,5 +79,11 @@ public class MedicinesServiceImpl extends ServiceImpl<MedicinesMapper, Medicines
         medicines.setMedicinesId(medicinesId);
         medicines.setMedicinesStockNum(medicinesStockNum);
         return this.baseMapper.updateById(medicines);
+    }
+
+    @Override
+    @Transactional
+    public int deductionMedicinesStorage(Long medicinesId, Long num) {
+        return this.baseMapper.deductionMedicinesStorage(medicinesId,num);
     }
 }
