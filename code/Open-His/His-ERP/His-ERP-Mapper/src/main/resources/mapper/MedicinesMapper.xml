@@ -45,9 +45,9 @@
 
     <!--发药处理-->
     <update id="deductionMedicinesStorage">
-        UPDATE STOCK_MEDICINES
-        SET MEDICINES_STOCK_NUM=(MEDICINES_STOCK_NUM - #{NUM})
-        WHERE MEDICINES_ID = #{MEDICINESID}
-          AND MEDICINES_STOCK_NUM > #{NUM}
+        UPDATE `stock_medicines`
+        SET `medicines_stock_num` = (`medicines_stock_num` - #{num})
+        WHERE `medicines_id` = #{medicinesId}
+          AND `medicines_stock_num` > #{num}
     </update>
 </mapper>
