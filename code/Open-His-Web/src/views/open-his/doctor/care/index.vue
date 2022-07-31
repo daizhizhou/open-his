@@ -206,7 +206,7 @@
             </el-col>
             <el-col :span="12" style="text-align:right">
               <el-button type="primary" :disabled="careHistory.regId===undefined" icon="el-icon-check" @click="handelSaveCareHistory">保存病历</el-button>
-              <el-button type="danger" :disabled="careHistory.regId===undefined" icon="el-icon-finished">完成就诊</el-button>
+              <el-button type="danger" :disabled="careHistory.regId===undefined" icon="el-icon-finished" @click="handleVisitComplete">完成就诊</el-button>
             </el-col>
           </el-row>
         </el-card>
