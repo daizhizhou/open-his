@@ -117,7 +117,7 @@ public class OrderChargeController extends HystrixSupport {
 
         //2,因为是支付宝支付，所以我们要返回给页面一个二维码
         String outTradeNo = orderId;
-        String subject = "SXT-医疗管理系统支付平台";
+        String subject = "Cloud9's医疗管理系统支付平台";
         String totalAmount = orderChargeFromDto.getOrderChargeDto().getOrderAmount().toString();
         String undiscountableAmount = null;
         String body = "";
@@ -203,7 +203,7 @@ public class OrderChargeController extends HystrixSupport {
         }
         //现转支付宝  支付宝转现金的问题
         String outTradeNo = orderId;
-        String subject = "SXT-医疗管理系统支付平台";
+        String subject = "Cloud9's医疗管理系统支付平台";
         String totalAmount = orderCharge.getOrderAmount().toString();
         String undiscountableAmount = null;
         String body = "";
