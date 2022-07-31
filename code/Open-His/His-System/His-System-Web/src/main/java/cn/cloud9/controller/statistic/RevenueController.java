@@ -5,7 +5,6 @@ import cn.cloud9.domain.RevenueQueryDto;
 import cn.cloud9.service.RevenueService;
 import cn.cloud9.vo.AjaxResult;
 import cn.hutool.core.date.DateUtil;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +65,7 @@ public class RevenueController extends HystrixSupport {
      * }
      */
     @GetMapping("queryAllRevenueData")
-    @HystrixCommand
+//    @HystrixCommand
     public AjaxResult queryAllRevenueData(RevenueQueryDto revenueQueryDto) {
         //如果没有选择开始日期和结果日期，就查询当天的数据
         if (revenueQueryDto.getBeginTime() == null) {
