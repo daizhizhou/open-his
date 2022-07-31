@@ -216,9 +216,9 @@
             <el-tab-pane label="病历" name="c1">
               <el-card>
                 <el-form ref="form" :model="careHistory" :inline="true" label-width="88px">
-                  <el-form-item label="发病日期" prop="caseDateObj">
+                  <el-form-item label="发病日期" prop="caseDate">
                     <el-date-picker
-                      v-model="careHistory.caseDateObj"
+                      v-model="careHistory.caseDate"
                       value-format="yyyy-MM-dd"
                       size="small"
                     />
