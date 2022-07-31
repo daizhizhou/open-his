@@ -91,4 +91,19 @@ public interface CareService extends IService<CareHistory> {
      * @param itemIds
      */
     String doMedicine(List<String> itemIds);
+
+    /**
+     * 根据条件查询所有项目
+     * @param coType 项目类型 0 药品  1检查
+     * @param status 支付状态
+     * @return
+     */
+    List<CareOrderItem> queryCareOrderItemsByStatus(String coType, String status);
+
+    /**
+     * 根据ID查询处方详情
+     * @param coId
+     * @return
+     */
+    CareOrder queryCareOrderByCoId(String coId);
 }

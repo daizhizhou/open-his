@@ -194,4 +194,17 @@ public class CareServiceImpl
             return sb.toString();
         }
     }
+
+    @Override
+    public List<CareOrderItem> queryCareOrderItemsByStatus(String coType, String status) {
+        QueryWrapper<CareOrderItem> qw = new QueryWrapper<>();
+        qw.eq(StringUtils.isNotBlank(coType), CareOrderItem.COL_ITEM_TYPE, coType);
+        qw.eq(StringUtils.isNotBlank(status), CareOrderItem.COL_STATUS, status);
+        return this.careOrderItemMapper.selectList(qw);
+    }
+
+    @Override
+    public CareOrder queryCareOrderByCoId(String coId) {
+        return this.careOrderMapper.selectById(coId);
+    }
 }
