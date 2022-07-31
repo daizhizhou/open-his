@@ -629,6 +629,7 @@ import {
   visitComplete
 } from '@/api/doctor/care'
 import { listCheckItemForPage } from '@/api/system/check-item'
+import { listMedicinesForPage } from '@/api/erp/medicines'
 export default {
   data() {
     return {
@@ -749,6 +750,14 @@ export default {
     })
   },
   methods: {
+    // 计算当前处方详情的总价
+    computeOrderItemAllAmount() {
+      this.submitCareOrder.careOrder.allAmount = 0.00
+      this.submitCareOrder.careOrderItems.filter(item => {
+        this.submitCareOrder.careOrder.allAmount +=
+        (item.num * item.price)
+      })
+    },
     // 打开添加检查处方的弹出层
     handelAddCheckItemOrder() {
       if (!this.careHistory.regId) {
@@ -832,6 +841,19 @@ export default {
         this.msgError('查询检查项目失败')
       })
     },
+    // 加载药品数据
+    getMedicinesList() {
+      this.tableItemList = []
+      this.drawerLoading = true
+      listMedicinesForPage(this.queryItemFormParams).then(res => {
+        this.tableItemList = res.data
+        this.total = res.total
+        this.drawerLoading = false
+      }).catch(() => {
+        this.drawerLoading = false
+        this.msgError('查询药品失败')
+      })
+    },
     // 搜索检查项目的方法
     handleCheckItemFormQuery() {
       this.queryItemFormParams.pageNum = 1
@@ -909,6 +931,16 @@ export default {
         })
       }
       // 计算总价
+      this.computeOrderItemAllAmount()
+    },
+    // 监听药品或检查项目弹出层的数量的变化
+    handleCareOrderItemNumChange(row) {
+      row.amount = row.num * row.price
+      this.computeOrderItemAllAmount()
+    },
+    // 删除弹出层里面的详情
+    handleCareOrderItemDelete(row) {
+      this.submitCareOrder.careOrderItems.splice(row.index, 1)
       this.computeOrderItemAllAmount()
     },
     // 点击上一页  下一页，跳转到哪一页面时触发
