@@ -60,4 +60,28 @@
             </if>
         </where>
     </select>
+
+    <!--检查项目数量统计列表-->
+    <select id="queryCheckStat" resultMap="CheckStatBaseResultMap">
+        select check_item_id, check_item_name, count(1) as 'count',sum(price) as total_amount
+        from his_check_result
+        <where>
+            <if test="check.checkItemId != null and check.patientName != ''">
+                and check_item_id = #{check.checkItemId}
+            </if>
+            <if test="check.queryDate != null and check.queryDate != ''">
+                and date_format(create_time, '%Y-%m-%d') = #{check.queryDate}
+            </if>
+            <if test="check.beginTime != null">
+                and create_time >= #{check.beginTime}
+            </if>
+            <if test="check.endTime != null">
+                and create_time <![CDATA[
+                        <=
+            ]]>
+                #{check.endTime}
+            </if>
+        </where>
+        group by check_item_id, check_item_name
+    </select>
 </mapper>
