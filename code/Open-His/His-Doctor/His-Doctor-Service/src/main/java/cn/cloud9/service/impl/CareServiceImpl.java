@@ -99,6 +99,7 @@ public class CareServiceImpl
         List<CareOrderItem> careOrderItems = careOrderFormDto.getCareOrderItems();
         //保存详情数据
         for (CareOrderItem careOrderItemDto : careOrderItems) {
+            careOrderItemDto.setCoId(careOrderDto.getCoId());
             careOrderItemDto.setCreateTime(DateUtil.date());
             careOrderItemDto.setStatus(ApiConstant.ORDER_DETAILS_STATUS_0);//未支付
             careOrderItemDto.setItemId(IdGeneratorSnowflakeUtil.generatorIdWithProfix(ApiConstant.ID_PREFIX_ITEM));
