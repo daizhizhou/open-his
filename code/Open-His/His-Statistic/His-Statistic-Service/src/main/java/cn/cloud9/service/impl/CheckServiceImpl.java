@@ -1,9 +1,10 @@
-package cn.cloud9.service;
+package cn.cloud9.service.impl;
 
 import cn.cloud9.domain.Check;
 import cn.cloud9.domain.CheckQueryDto;
 import cn.cloud9.domain.CheckStat;
 import cn.cloud9.mapper.CheckMapper;
+import cn.cloud9.service.CheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
