@@ -5,7 +5,8 @@ import cn.cloud9.domain.CheckQueryDto;
 import cn.cloud9.domain.CheckStat;
 import cn.cloud9.mapper.CheckMapper;
 import cn.cloud9.service.CheckService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
  * @project Open-His
  * @date 2022年07月31日 下午 07:49
  */
+@Service
+@Component
 public class CheckServiceImpl implements CheckService {
 
     @Resource
