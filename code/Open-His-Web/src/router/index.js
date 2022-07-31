@@ -309,7 +309,7 @@ export const asyncRoutes = [
       },
       {
         path: 'checklist',
-        component: () => import('@/views/error-page/404'),
+        component: () => import('@/views/open-his/doctor/checkResult/checklist'),
         name: '/check/checklist',
         meta: { title: '检查结果查询', icon: 'list' }
       }

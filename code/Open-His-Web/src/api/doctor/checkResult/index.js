@@ -40,3 +40,12 @@ export function completeCheckResult(data) {
     data: data
   })
 }
+
+// 查询所有检查中的和检查完成了的项目
+export function queryAllCheckResultForPage(data) {
+  return request({
+    url: '/doctor/check/queryAllCheckResultForPage',
+    method: 'post',
+    data: data
+  })
+}

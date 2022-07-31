@@ -35,6 +35,7 @@ systemctl enable firewalld
 # - - - - - - - - - - - - - - - - - - - - 防火墙设置结束 - - - - - - - - - - - - - - - - - - - - #
 
 # - - - - - - - - - - - - - - - - - - - - 端口设置开始 - - - - - - - - - - - - - - - - - - - - #
+# 查看已开放的端口
 firewall-cmd --zone=public --list-ports
 
 # 添加开放端口
@@ -214,16 +215,20 @@ docker restart redis/id
 -- 1、IP参数为宿主机IP地址
 -- 2、WEB_PORT改成非80端口
 docker run -d --restart=always \
---privileged=true \
---net=host \
---name=fastdfs \
--e IP=192.168.124.34 \
--e WEB_PORT=6378 \
--v ${HOME}/fastdfs:/var/local/fastdfs registry.cn-beijing.aliyuncs.com/tianzuo/fastdfs
+  --privileged=true \
+  --net=host \
+  --name=fastdfs \
+  -e IP=192.168.124.34 \
+  -e WEB_PORT=8888 \
+  -v ${HOME}/fastdfs:/var/local/fastdfs registry.cn-beijing.aliyuncs.com/tianzuo/fastdfs
+
 
 # 配置开放端口
 firewall-cmd --zone=public --add-port=6378/tcp --permanent
 firewall-cmd --reload
+
+# 关闭防火墙 service firewalld stop
+
 # - - - - - - - - - - - - - - - - - - - - 安装FastDFS镜像结束 - - - - - - - - - - - - - - - - - - - - #
 
 # - - - - - - - - - - - - - - - - - - - - 安装Zookeeper开始 - - - - - - - - - - - - - - - - - - - - #

@@ -20,7 +20,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author OnCloud9
@@ -140,5 +142,30 @@ public class CheckResultController extends HystrixSupport {
     public AjaxResult queryAllCheckResultForPage(@RequestBody CheckResult checkResultDto) {
         DataGridViewVO dataGridView = this.checkResultService.queryAllCheckResultForPage(checkResultDto);
         return AjaxResult.success("查询成功", dataGridView.getData(), dataGridView.getTotal());
+    }
+
+    /**
+     * 根据检查单号查询要检查的项目详情
+     */
+    @GetMapping("queryCheckItemByItemId/{itemId}")
+    @HystrixCommand
+    public AjaxResult queryCheckItemByItemId(@PathVariable String itemId) {
+        CareOrderItem careOrderItem = this.careService.queryCareOrderItemByItemId(itemId);
+        if (careOrderItem == null) {
+            return AjaxResult.fail("【" + itemId + "】的检查单号的数据不存在，请核对后再查询");
+        }
+        if (!careOrderItem.getStatus().equals(ApiConstant.ORDER_DETAILS_STATUS_1)) {
+            return AjaxResult.fail("【" + itemId + "】的检查单号的没有支付，请支付后再来检查");
+        }
+        if (!careOrderItem.getItemType().equals(ApiConstant.CO_TYPE_CHECK)) {
+            return AjaxResult.fail("【" + itemId + "】的单号不是检查项目，请核对后再查询");
+        }
+        CareOrder careOrder = this.careService.queryCareOrderByCoId(careOrderItem.getCoId());
+        CareHistory careHistory = this.careService.queryCareHistoryByChId(careOrder.getChId());
+        Map<String, Object> res = new HashMap<>();
+        res.put("item", careOrderItem);
+        res.put("careOrder", careOrder);
+        res.put("careHistory", careHistory);
+        return AjaxResult.success(res);
     }
 }
