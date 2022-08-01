@@ -4,6 +4,7 @@ import cn.cloud9.domain.SystemMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.io.Serializable;
 import java.util.List;
 
 public interface SystemMenuMapper extends BaseMapper<SystemMenu> {
@@ -22,4 +23,11 @@ public interface SystemMenuMapper extends BaseMapper<SystemMenu> {
      * @return
      */
     List<Long> queryMenuIdsByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 根据当前登陆账号获取对应的菜单信息
+     * @param userId
+     * @return
+     */
+    List<SystemMenu> selectMenuListByUserId(@Param("userId") Serializable userId);
 }

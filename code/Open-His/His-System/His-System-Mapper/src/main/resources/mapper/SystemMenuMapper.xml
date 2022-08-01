@@ -51,4 +51,12 @@
                      INNER JOIN sys_role_menu rm ON m.menu_id = rm.menu_id AND rm.role_id = #{roleId}
         )
     </select>
+
+    <select id="selectMenuListByUserId" resultMap="BaseResultMap">
+        select distinct t1.*
+        from sys_menu t1
+                 inner join sys_role_menu t2
+                 inner join sys_role_user t3 on (t1.menu_id = t2.menu_id and t2.role_id = t3.role_id)
+        where t3.user_id = #{userId}
+    </select>
 </mapper>

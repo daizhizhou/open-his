@@ -1,28 +1,22 @@
 package cn.cloud9.service.impl;
 
 import cn.cloud9.contants.ApiConstant;
+import cn.cloud9.domain.SystemUser;
+import cn.cloud9.mapper.SystemUserMapper;
+import cn.cloud9.service.SystemUserService;
 import cn.cloud9.utils.AppMd5Util;
 import cn.cloud9.utils.CheckUtil;
 import cn.cloud9.vo.DataGridViewVO;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.cloud9.mapper.SystemUserMapper;
-import cn.cloud9.domain.SystemUser;
-import cn.cloud9.service.SystemUserService;
 
 @Service
 public class SystemUserServiceImpl
@@ -91,6 +85,10 @@ public class SystemUserServiceImpl
         return this.baseMapper.selectList(qw);
     }
 
+    /**
+     * 管理员 123456 其他用户 手机后6位
+     * @param userIds
+     */
     @Override
     public void resetPassWord(Long[] userIds) {
         for (Long userId : userIds) {
