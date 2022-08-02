@@ -65,3 +65,5 @@ https://blog.csdn.net/qq_38668544/article/details/120531532?spm=1001.2101.3001.6
 另外实现类Bean也需要被Spring管理，改用@Component注解
 
 
+头像渲染问题
+https://blog.csdn.net/weixin_41883384/article/details/92981207

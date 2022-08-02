@@ -21,7 +21,7 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <!-- 用户头像 -->
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="avatar" class="user-avatar" :onerror="defaultAvatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -59,7 +59,7 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-
+// import defaultAvatar from '@/assets/onerror/default-avatar.png'
 export default {
   components: {
     Breadcrumb,
@@ -69,12 +69,20 @@ export default {
     SizeSelect,
     Search
   },
+  data() {
+    return {
+      defaultAvatar: `this.src="${require('./../../assets/onerror/default-avatar.png')}"`
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
       'device'
     ])
+  },
+  created() {
+    console.log('this.avatar', this.avatar)
   },
   methods: {
     toggleSideBar() {
