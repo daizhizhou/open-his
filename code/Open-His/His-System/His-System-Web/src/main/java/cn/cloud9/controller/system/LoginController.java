@@ -4,9 +4,8 @@ import cn.cloud9.aspect.annotation.SystemLog;
 import cn.cloud9.aspect.enums.BusinessType;
 import cn.cloud9.contants.ApiConstant;
 import cn.cloud9.contants.HttpStatus;
-import cn.cloud9.domain.SimpleUser;
-import cn.cloud9.domain.SystemLoginInfo;
-import cn.cloud9.domain.SystemMenu;
+import cn.cloud9.domain.*;
+import cn.cloud9.service.SystemDepartmentService;
 import cn.cloud9.service.SystemLoginInfoService;
 import cn.cloud9.service.SystemMenuService;
 import cn.cloud9.util.ShiroSecurityUtil;
@@ -17,19 +16,14 @@ import cn.cloud9.vo.AjaxResult;
 import cn.cloud9.vo.LoginBodyDTO;
 import cn.cloud9.vo.MenuTreeVO;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
 import eu.bitwalker.useragentutils.UserAgent;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.log4j.Log4j2;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +46,8 @@ public class LoginController {
     private SystemMenuService systemMenuService;
     @Resource
     private SystemLoginInfoService systemLoginInfoService;
+    @Resource
+    private SystemDepartmentService systemDepartmentService;
     /**
      * 登录方法
      *
@@ -106,6 +102,17 @@ public class LoginController {
         ajax.put("picture", activeUser.getSystemUser().getPicture());
         ajax.put("roles", activeUser.getRoles());
         ajax.put("permissions", activeUser.getPermissions());
+        ajax.put("data", JSON.toJSON(activeUser));
+        return ajax;
+    }
+
+    @GetMapping("/getCurrentUserInfo")
+    public AjaxResult getCurrentUserInfo() {
+        Subject subject = SecurityUtils.getSubject();
+        ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+        final SystemUser systemUser = activeUser.getSystemUser();
+        AjaxResult ajax = AjaxResult.success();
+        ajax.put("data", JSON.toJSON(systemUser));
         return ajax;
     }
 

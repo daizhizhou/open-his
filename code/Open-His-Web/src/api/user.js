@@ -29,6 +29,20 @@ export function getInfo(token) {
 }
 
 /**
+ * 获取当前登陆用户信息(全部信息)
+ * @param {*} token
+ * @returns
+ */
+export function getCurrentUserInfo(token) {
+  return request({
+    // url: '/vue-element-admin/user/info',
+    url: '/login/getCurrentUserInfo',
+    method: 'get',
+    params: { token }
+  })
+}
+
+/**
  * 退出系统
  * @returns
  */

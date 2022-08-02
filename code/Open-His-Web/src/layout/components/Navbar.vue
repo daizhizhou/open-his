@@ -18,17 +18,21 @@
 
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="hover">
         <!-- 用户头像 -->
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar" :onerror="defaultAvatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
+          <!--
           <router-link to="/profile/index">
-            <!-- <el-dropdown-item>Profile</el-dropdown-item> -->
-            <el-dropdown-item>个人信息</el-dropdown-item>
+            <el-dropdown-item>Profile</el-dropdown-item>
           </router-link>
+          -->
+
+          <el-dropdown-item @click.native="openUserInfoDrawer">个人信息</el-dropdown-item>
+
           <router-link to="/">
             <!-- <el-dropdown-item>Dashboard</el-dropdown-item> -->
             <el-dropdown-item>首页</el-dropdown-item>
@@ -48,6 +52,17 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <el-drawer
+      v-if="userInfoVisible"
+      title="账号信息"
+      :visible.sync="userInfoVisible"
+      direction="rtl"
+      :append-to-body="true"
+    >
+      <user-info />
+    </el-drawer>
+
   </div>
 </template>
 
@@ -60,6 +75,9 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 // import defaultAvatar from '@/assets/onerror/default-avatar.png'
+
+import UserInfo from '@/views/open-his/system/sys-user/user-info'
+
 export default {
   components: {
     Breadcrumb,
@@ -67,10 +85,12 @@ export default {
     ErrorLog,
     Screenfull,
     SizeSelect,
-    Search
+    Search,
+    UserInfo
   },
   data() {
     return {
+      userInfoVisible: false,
       defaultAvatar: `this.src="${require('./../../assets/onerror/default-avatar.png')}"`
     }
   },
@@ -85,6 +105,9 @@ export default {
     console.log('this.avatar', this.avatar)
   },
   methods: {
+    openUserInfoDrawer() {
+      this.userInfoVisible = true
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
