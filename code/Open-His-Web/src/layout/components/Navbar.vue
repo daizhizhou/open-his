@@ -59,6 +59,7 @@
       :visible.sync="userInfoVisible"
       direction="rtl"
       :append-to-body="true"
+      size="650px"
     >
       <user-info />
     </el-drawer>

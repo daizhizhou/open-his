@@ -64,11 +64,9 @@ public class SystemUserServiceImpl
 
     @Override
     public int updateUser(SystemUser userDto) {
-        SystemUser user = this.baseMapper.selectById(userDto.getUserId());
-        if (CheckUtil.isEmpty(user)) return 0;
-        user.setUpdateBy(userDto.getSimpleUser().getUserName());
-        user.setUpdateTime(DateUtil.date());
-        return this.baseMapper.updateById(user);
+        userDto.setUpdateBy(userDto.getSimpleUser().getUserName());
+        userDto.setUpdateTime(DateUtil.date());
+        return this.baseMapper.updateById(userDto);
     }
 
     @Override

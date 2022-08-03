@@ -1,73 +1,115 @@
 <template>
-  <div>
-    <el-form ref="form" :model="userInfo" label-width="80px">
+  <div class="form-container">
+    <el-form ref="form" :rules="formRule" :inline="true" :model="userInfo" label-position="right" label-width="80px">
 
-      <el-form-item label="电子邮箱">
-        <el-input v-model="userInfo.email" />
+      <el-form-item label="电子邮箱" prop="email">
+        <el-input v-model.trim="userInfo.email" clearable :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="注册手机">
-        <el-input v-model="userInfo.phone" />
+      <el-form-item label="注册手机" prop="phone">
+        <el-input v-model="userInfo.phone" clearable :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="用户名称">
-        <el-input v-model="userInfo.userName" />
+      <el-form-item label="用户名称" prop="userName">
+        <el-input v-model="userInfo.userName" clearable :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="所属部门">
-        <el-input v-model="userInfo.deptId" />
+      <el-form-item label="所属部门" prop="deptId">
+        <el-select v-model="userInfo.deptId" placeholder="请选择" :style="commonWidth">
+          <el-option
+            v-for="item in deptList"
+            :key="item.deptId"
+            :label="item.deptName"
+            :value="item.deptId"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="登录时间">
-        <el-input v-model="userInfo.lastLoginTime" />
+        <el-input v-model="userInfo.lastLoginTime" disabled :style="commonWidth" />
       </el-form-item>
 
       <el-form-item label="登录IP">
-        <el-input v-model="userInfo.lastLoginIp" />
+        <el-input v-model="userInfo.lastLoginIp" disabled :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="学历背景">
-        <el-input v-model="userInfo.background" />
+      <el-form-item label="学历背景" prop="background">
+        <el-select v-model="userInfo.background" placeholder="请选择" :style="commonWidth">
+          <el-option
+            v-for="item in backgroundTypeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="账号状态">
-        <el-input v-model="userInfo.status" />
+        <el-select v-model="userInfo.status" placeholder="请选择" disabled :style="commonWidth">
+          <el-option
+            v-for="item in accountStatusTypeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="账号类型">
-        <el-input v-model="userInfo.userType" />
+        <el-select v-model="userInfo.userType" placeholder="请选择" disabled :style="commonWidth">
+          <el-option
+            v-for="item in accountTypeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
       </el-form-item>
 
-      <el-form-item label="用户性别">
-        <el-input v-model="userInfo.sex" />
+      <el-form-item label="用户性别" prop="sex">
+        <el-select v-model="userInfo.sex" placeholder="请选择" :style="commonWidth">
+          <el-option
+            v-for="item in genderTypeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
       </el-form-item>
 
-      <el-form-item label="用户年龄">
-        <el-input v-model="userInfo.age" />
+      <el-form-item label="用户年龄" prop="age">
+        <el-input v-model="userInfo.age" clearable type="number" :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="医术擅长">
-        <el-input v-model="userInfo.strong" />
+      <el-form-item label="医术擅长" prop="strong">
+        <el-input v-model="userInfo.strong" clearable :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="自我简介">
-        <el-input v-model="userInfo.introduction" />
+      <el-form-item label="自我简介" prop="introduction">
+        <el-input v-model="userInfo.introduction" clearable :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="医师级别">
-        <el-input v-model="userInfo.userRank" />
+      <el-form-item label="医师级别" prop="userRank">
+        <el-input v-model="userInfo.userRank" clearable type="number" :style="commonWidth" />
       </el-form-item>
 
       <el-form-item label="OpenId">
-        <el-input v-model="userInfo.openId" />
+        <el-input v-model="userInfo.openId" disabled :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="医术荣誉">
-        <el-input v-model="userInfo.honor" />
+      <el-form-item label="医术荣誉" prop="honor">
+        <el-input v-model="userInfo.honor" clearable :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="参与排班">
-        <el-input v-model="userInfo.schedulingFlag" />
+      <el-form-item label="参与排班" prop="schedulingFlag">
+        <el-select v-model="userInfo.schedulingFlag" placeholder="请选择" :style="commonWidth">
+          <el-option
+            v-for="item in statusTypeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
       </el-form-item>
 
       <div align="center">
@@ -83,21 +125,85 @@
 import {
   getCurrentUserInfo
 } from '@/api/user'
+import {
+  updateUser
+} from '@/api/system/sys-user'
+import {
+  selectAllDept
+} from '@/api/system/department'
+
+import {
+  getDataByType
+} from '@/api/system/dict/data'
+
 export default {
   name: 'UserInfo',
   data() {
     return {
-      userInfo: null
+      userInfo: {
+        email: ''
+      },
+      deptList: [],
+      genderTypeList: [],
+      backgroundTypeList: [],
+      statusTypeList: [],
+      accountTypeList: [
+        { dictLabel: '超级管理员', dictValue: '0' },
+        { dictLabel: '系统用户', dictValue: '1' }
+      ],
+      accountStatusTypeList: [
+        { dictLabel: '正常', dictValue: '0' },
+        { dictLabel: '停用', dictValue: '1' }
+      ],
+      commonWidth: { width: '220px' },
+      formRule: {
+        email: [
+          { required: true, message: '请输入电子邮箱', trigger: 'blur' }
+        ],
+        phone: [
+          { required: true, message: '请输入注册手机', trigger: 'blur' }
+        ],
+        userName: [
+          { required: true, message: '请输入用户名称', trigger: 'blur' }
+        ]
+      }
     }
   },
-  async created() {
-    const { data: res } = await getCurrentUserInfo()
-    console.log(JSON.stringify(res))
-    this.userInfo = res
+  created() {
+    this.initialDictData()
+    this.initialDepartmentData()
+    this.initialUserInfoData()
   },
   methods: {
-    submit() {
+    async initialUserInfoData() {
+      const { data: res } = await getCurrentUserInfo()
+      console.log(JSON.stringify(res))
+      this.userInfo = res
+    },
+    async initialDepartmentData() {
+      const { data: resList } = await selectAllDept()
+      this.deptList = resList
+    },
+    async initialDictData() {
+      const { data: genderType } = await getDataByType('sys_user_sex')
+      this.genderTypeList = genderType
 
+      const { data: backgroundType } = await getDataByType('sys_user_background')
+      this.backgroundTypeList = backgroundType
+
+      const { data: statusType } = await getDataByType('sys_yes_no')
+      this.statusTypeList = statusType
+    },
+    submit() {
+      this.$refs['form'].validate(async valid => {
+        if (!valid) return
+
+        const { code } = await updateUser(this.userInfo)
+        if (code === 200) {
+          this.$message.success('更新成功！')
+          this.$parent.$parent.userInfoVisible = false
+        }
+      })
     },
     cancel() {
       this.$parent.$parent.userInfoVisible = false
@@ -106,4 +212,10 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.form-container {
+  margin: 0 15px;
+}
+</style>
 

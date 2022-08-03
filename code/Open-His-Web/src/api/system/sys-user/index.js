@@ -21,7 +21,7 @@ export function updateUser(data) {
   return request({
     url: '/system/user/updateUser',
     method: 'put',
-    params: data
+    data: data
   })
 }
 // 删除

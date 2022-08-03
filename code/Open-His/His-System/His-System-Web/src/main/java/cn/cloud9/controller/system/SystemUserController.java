@@ -50,7 +50,7 @@ public class SystemUserController {
      */
     @PutMapping("updateUser")
     @SystemLog(title = "修改用户",businessType = BusinessType.UPDATE)
-    public AjaxResult updateUser(@Validated SystemUser userDto) {
+    public AjaxResult updateUser(@RequestBody @Validated SystemUser userDto) {
         userDto.setSimpleUser(ShiroSecurityUtil.getCurrentSimpleUser());
         return AjaxResult.toAjax(this.systemUserService.updateUser(userDto));
     }
