@@ -25,18 +25,47 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="登录时间">
-        <el-input v-model="userInfo.lastLoginTime" disabled :style="commonWidth" />
-      </el-form-item>
-
-      <el-form-item label="登录IP">
-        <el-input v-model="userInfo.lastLoginIp" disabled :style="commonWidth" />
-      </el-form-item>
-
       <el-form-item label="学历背景" prop="background">
         <el-select v-model="userInfo.background" placeholder="请选择" :style="commonWidth">
           <el-option
             v-for="item in backgroundTypeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="用户性别" prop="sex">
+        <el-select v-model="userInfo.sex" placeholder="请选择" :style="commonWidth">
+          <el-option
+            v-for="item in genderTypeList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="用户年龄" prop="age">
+        <el-input v-model="userInfo.age" clearable type="number" :style="commonWidth" />
+      </el-form-item>
+
+      <el-form-item label="医师级别" prop="userRank">
+        <el-select v-model="userInfo.userRank" placeholder="请选择" :style="commonWidth">
+          <el-option
+            v-for="item in userLevelList"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="参与排班" prop="schedulingFlag">
+        <el-select v-model="userInfo.schedulingFlag" placeholder="请选择" :style="commonWidth">
+          <el-option
+            v-for="item in statusTypeList"
             :key="item.dictValue"
             :label="item.dictLabel"
             :value="item.dictValue"
@@ -66,31 +95,12 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="用户性别" prop="sex">
-        <el-select v-model="userInfo.sex" placeholder="请选择" :style="commonWidth">
-          <el-option
-            v-for="item in genderTypeList"
-            :key="item.dictValue"
-            :label="item.dictLabel"
-            :value="item.dictValue"
-          />
-        </el-select>
+      <el-form-item label="登录时间">
+        <el-input v-model="userInfo.lastLoginTime" disabled :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="用户年龄" prop="age">
-        <el-input v-model="userInfo.age" clearable type="number" :style="commonWidth" />
-      </el-form-item>
-
-      <el-form-item label="医术擅长" prop="strong">
-        <el-input v-model="userInfo.strong" clearable :style="commonWidth" />
-      </el-form-item>
-
-      <el-form-item label="自我简介" prop="introduction">
-        <el-input v-model="userInfo.introduction" clearable :style="commonWidth" />
-      </el-form-item>
-
-      <el-form-item label="医师级别" prop="userRank">
-        <el-input v-model="userInfo.userRank" clearable type="number" :style="commonWidth" />
+      <el-form-item label="登录IP">
+        <el-input v-model="userInfo.lastLoginIp" disabled :style="commonWidth" />
       </el-form-item>
 
       <el-form-item label="OpenId">
@@ -98,18 +108,15 @@
       </el-form-item>
 
       <el-form-item label="医术荣誉" prop="honor">
-        <el-input v-model="userInfo.honor" clearable :style="commonWidth" />
+        <el-input v-model="userInfo.honor" type="textarea" clearable :style="commonWidth" />
       </el-form-item>
 
-      <el-form-item label="参与排班" prop="schedulingFlag">
-        <el-select v-model="userInfo.schedulingFlag" placeholder="请选择" :style="commonWidth">
-          <el-option
-            v-for="item in statusTypeList"
-            :key="item.dictValue"
-            :label="item.dictLabel"
-            :value="item.dictValue"
-          />
-        </el-select>
+      <el-form-item label="医术擅长" prop="strong">
+        <el-input v-model="userInfo.strong" type="textarea" clearable :style="commonWidth" />
+      </el-form-item>
+
+      <el-form-item label="自我简介" prop="introduction">
+        <el-input v-model="userInfo.introduction" type="textarea" clearable :style="commonWidth" />
       </el-form-item>
 
       <div align="center">
@@ -147,6 +154,7 @@ export default {
       genderTypeList: [],
       backgroundTypeList: [],
       statusTypeList: [],
+      userLevelList: [],
       accountTypeList: [
         { dictLabel: '超级管理员', dictValue: '0' },
         { dictLabel: '系统用户', dictValue: '1' }
@@ -184,6 +192,7 @@ export default {
       const { data: resList } = await selectAllDept()
       this.deptList = resList
     },
+    // 加载数据字典选项
     async initialDictData() {
       const { data: genderType } = await getDataByType('sys_user_sex')
       this.genderTypeList = genderType
@@ -193,6 +202,9 @@ export default {
 
       const { data: statusType } = await getDataByType('sys_yes_no')
       this.statusTypeList = statusType
+
+      const { data: userLevel } = await getDataByType('sys_user_level')
+      this.userLevelList = userLevel
     },
     submit() {
       this.$refs['form'].validate(async valid => {
