@@ -70,4 +70,5 @@ public interface SystemUserService extends IService<SystemUser>{
      */
     List<SystemUser> querySchedulingUsers(Long userId, Long deptId);
 
+    SystemUser selectCurrentUserById(Long userId);
 }

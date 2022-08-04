@@ -4,10 +4,13 @@ import cn.cloud9.aspect.annotation.SystemLog;
 import cn.cloud9.aspect.enums.BusinessType;
 import cn.cloud9.contants.ApiConstant;
 import cn.cloud9.contants.HttpStatus;
-import cn.cloud9.domain.*;
-import cn.cloud9.service.SystemDepartmentService;
+import cn.cloud9.domain.SimpleUser;
+import cn.cloud9.domain.SystemLoginInfo;
+import cn.cloud9.domain.SystemMenu;
+import cn.cloud9.domain.SystemUser;
 import cn.cloud9.service.SystemLoginInfoService;
 import cn.cloud9.service.SystemMenuService;
+import cn.cloud9.service.SystemUserService;
 import cn.cloud9.util.ShiroSecurityUtil;
 import cn.cloud9.utils.AddressUtil;
 import cn.cloud9.utils.IpUtil;
@@ -47,7 +50,7 @@ public class LoginController {
     @Resource
     private SystemLoginInfoService systemLoginInfoService;
     @Resource
-    private SystemDepartmentService systemDepartmentService;
+    private SystemUserService systemUserService;
     /**
      * 登录方法
      *
@@ -106,13 +109,19 @@ public class LoginController {
         return ajax;
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping("/getCurrentUserInfo")
     public AjaxResult getCurrentUserInfo() {
         Subject subject = SecurityUtils.getSubject();
         ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
-        final SystemUser systemUser = activeUser.getSystemUser();
+        SystemUser systemUser = activeUser.getSystemUser();
         AjaxResult ajax = AjaxResult.success();
+        systemUser = systemUserService.selectCurrentUserById(systemUser.getUserId());
         ajax.put("data", JSON.toJSON(systemUser));
+
         return ajax;
     }
 

@@ -107,4 +107,9 @@ public class SystemUserServiceImpl
         qw.eq(SystemUser.COL_SCHEDULING_FLAG, ApiConstant.SCHEDULING_FLAG_TRUE);
         return this.baseMapper.selectList(qw);
     }
+
+    @Override
+    public SystemUser selectCurrentUserById(Long userId) {
+        return this.baseMapper.selectById(userId);
+    }
 }
