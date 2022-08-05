@@ -2,6 +2,27 @@
   <div class="form-container">
     <el-form ref="form" :rules="formRule" :inline="true" :model="userInfo" label-position="right" label-width="80px">
 
+      <el-form-item label="用户头像" prop="picture">
+        <el-upload
+          :headers="{ token }"
+          :action="uploadApi"
+          :before-upload="beforeAvatarUpload"
+          :on-remove="handleRemove"
+          :on-success="handleAvatarSuccess"
+          :on-preview="handlePreview"
+          :on-exceed="handOnExceed"
+          :file-list="fileList"
+          list-type="picture"
+          :multiple="false"
+          name="image"
+          :with-credentials="true"
+          :limit="1"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+      </el-form-item>
+
       <el-form-item label="电子邮箱" prop="email">
         <el-input v-model.trim="userInfo.email" clearable :style="commonWidth" />
       </el-form-item>
@@ -129,19 +150,13 @@
 
 <script>
 
-import {
-  getCurrentUserInfo
-} from '@/api/user'
-import {
-  updateUser
-} from '@/api/system/sys-user'
-import {
-  selectAllDept
-} from '@/api/system/department'
+import { getCurrentUserInfo } from '@/api/user'
+import { updateUser } from '@/api/system/sys-user'
+import { selectAllDept } from '@/api/system/department'
+import { getDataByType } from '@/api/system/dict/data'
+import { deleteImage } from '@/api/system/file'
 
-import {
-  getDataByType
-} from '@/api/system/dict/data'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'UserInfo',
@@ -150,6 +165,7 @@ export default {
       userInfo: {
         email: ''
       },
+      uploadApi: '',
       deptList: [],
       genderTypeList: [],
       backgroundTypeList: [],
@@ -174,19 +190,69 @@ export default {
         userName: [
           { required: true, message: '请输入用户名称', trigger: 'blur' }
         ]
-      }
+      },
+
+      fileList: []
     }
   },
+  computed: {
+    ... mapGetters([
+      'token'
+    ])
+  },
   created() {
+    this.initialUploadApi()
     this.initialDictData()
     this.initialDepartmentData()
     this.initialUserInfoData()
   },
   methods: {
+    // - - - - - - 照片上传方法开始 - - - - -  //
+    initialUploadApi() {
+      this.uploadApi = `${process.env.VUE_APP_BASE_API}system/upload/doUploadImage2`
+      console.log('this.uploadApi', this.uploadApi)
+    },
+    handOnExceed(file, fileList) {
+      this.$message.error('只能上传一个图片，请删除当前图片再进行上传')
+    },
+    async handleRemove(file, fileList) {
+      // 调用删除接口
+      if (this.fileList.length !== 0) {
+        const path = this.fileList[0]['url']
+        const { data: res } = await deleteImage({ path: path })
+        console.log('删除结果', res)
+      }
+      this.fileList = []
+    },
+    handleAvatarSuccess(res, file) {
+      console.log('handleAvatarSuccess', res)
+      this.fileList = [{ name: res.data['name'], url: res.data['url'] }]
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    // - - - - - - 照片上传方法 结束 - - - - -  //
     async initialUserInfoData() {
       const { data: res } = await getCurrentUserInfo()
       console.log(JSON.stringify(res))
       this.userInfo = res
+
+      // 回显用户头像
+      if (this.userInfo.picture) {
+        this.fileList = [{ url: this.userInfo.picture }]
+      }
+    },
+    handlePreview(file, fileList) {
+      console.log('handlePreview', file, fileList)
     },
     async initialDepartmentData() {
       const { data: resList } = await selectAllDept()
@@ -207,6 +273,11 @@ export default {
       this.userLevelList = userLevel
     },
     submit() {
+      // 把文件url回挪到form表单
+      if (this.fileList.length !== 0) {
+        this.userInfo.picture = this.fileList[0].url
+      }
+
       this.$refs['form'].validate(async valid => {
         if (!valid) return
 

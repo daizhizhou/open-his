@@ -25,7 +25,7 @@ import java.io.IOException;
 @Service
 @EnableConfigurationProperties(UploadProperties.class)
 public class UploadService {
-    private Log log= LogFactory.getLog(UploadService.class);
+    private Log log = LogFactory.getLog(UploadService.class);
 
     @Autowired
     private FastFileStorageClient storageClient;

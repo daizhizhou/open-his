@@ -14,4 +14,12 @@ public class CheckUtil {
     public static boolean isEmptyArray(Object[] val) {
         return val == null || val.length == 0;
     }
+
+    public static boolean isEmptyString(String path) {
+        if (isEmpty(path)) return false;
+        path = path.trim();
+        return "".equals(path)
+                || "null".equals(path)
+                || "undefined".equals(path);
+    }
 }
